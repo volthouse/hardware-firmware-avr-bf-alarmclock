@@ -93,6 +93,19 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
     {ST_TIME_DATEFORMAT_ADJUST, KEY_PREV,   ST_TIME_DATE_FUNC},
     {ST_TIME_DATEFORMAT_ADJUST, KEY_MINUS,  ST_TIME_DATE_ADJUST},
 
+//**********************
+	{ST_ALARM_TIME,             KEY_PLUS,   ST_TIME},
+    {ST_ALARM_TIME,             KEY_NEXT,   ST_ALARM_TIME_FUNC},
+    {ST_ALARM_TIME,             KEY_PREV,   ST_AVRBF},
+    {ST_ALARM_TIME,             KEY_MINUS,  ST_MUSIC},
+	
+	//{ST_ALARM_TIME_ADJUST,      KEY_PLUS,   ST_TIME_CLOCKFORMAT_ADJUST}, 
+    {ST_ALARM_TIME_ADJUST,      KEY_ENTER,  ST_ALARM_TIME_ADJUST_FUNC},
+    {ST_ALARM_TIME_ADJUST,      KEY_PREV,   ST_ALARM_TIME_FUNC},    
+    //{ST_ALARM_TIME_ADJUST,      KEY_MINUS,  ST_TIME_CLOCKFORMAT_ADJUST}, 
+	
+//************************
+
     {ST_MUSIC,                  KEY_PLUS,   ST_TIME},
     {ST_MUSIC,                  KEY_NEXT,   ST_MUSIC_SELECT},
     {ST_MUSIC,                  KEY_PREV,   ST_AVRBF},
@@ -213,6 +226,13 @@ const MENU_STATE menu_state[] PROGMEM = {
     {ST_OPTIONS_AUTO_POWER_SAVE_FUNC,   NULL,                       AutoPower},
     {ST_OPTIONS_KEYCLICK,               MT_OPTIONS_KEYCLICK,        NULL},
     {ST_OPTIONS_KEYCLICK_FUNC,          NULL,                       KeyClick},
+
+//*****************
+    {ST_ALARM_TIME,                     MT_TIME_CLOCK,              NULL},
+    {ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
+    {ST_ALARM_TIME_ADJUST,              MT_TIME_CLOCK_ADJUST,       NULL},
+    {ST_ALARM_TIME_ADJUST_FUNC,         NULL,                       SetAlarm},
+//*****************
 
     {0,                                 NULL,                       NULL},
 

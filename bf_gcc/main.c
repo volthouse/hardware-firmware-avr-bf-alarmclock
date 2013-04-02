@@ -61,6 +61,7 @@
 #include "LCD_driver.h"
 #include "button.h"
 #include "RTC.h"
+#include "Alarm.h"
 #include "timer0.h"
 #include "BCD.h"
 #include "usart.h"

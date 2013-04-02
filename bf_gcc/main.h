@@ -86,4 +86,7 @@ void OSCCAL_calibration(void);
 #define ST_OPTIONS_KEYCLICK             100
 #define ST_OPTIONS_KEYCLICK_FUNC        101
 
-
+#define ST_ALARM_TIME                   111
+#define ST_ALARM_TIME_FUNC              112
+#define ST_ALARM_TIME_ADJUST            113
+#define ST_ALARM_TIME_ADJUST_FUNC       114
