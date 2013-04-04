@@ -47,12 +47,14 @@ const char MT_OPTIONS_BOOT[] PROGMEM              = "Bootloader";
 const char MT_OPTIONS_POWER_SAVE[] PROGMEM        = "Power Save Mode";
 const char MT_OPTIONS_AUTO_POWER_SAVE[] PROGMEM   = "Auto Power Save";
 const char MT_OPTIONS_KEYCLICK[] PROGMEM          = "Key Click";
+const char MT_ALARM[] PROGMEM         			  = "Alarm";
+const char MT_ALARM_TIME_ADJUST[] PROGMEM         = "Adjust Alarm";
 // mtE
 
 // mt MENU_NEXTSTATE menu_nextstate[] = { 
 const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
 //  STATE                       INPUT       NEXT STATE
-    {ST_TIME_CLOCK,                  KEY_PLUS,   ST_OPTIONS},
+    {ST_AVRBF,                  KEY_PLUS,   ST_OPTIONS},
     {ST_AVRBF,                  KEY_NEXT,   ST_AVRBF_REV},
     {ST_AVRBF,                  KEY_MINUS,  ST_TIME},
 
@@ -61,7 +63,7 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
     {ST_TIME,                   KEY_PLUS,   ST_AVRBF},
     {ST_TIME,                   KEY_NEXT,   ST_TIME_CLOCK},
     {ST_TIME,                   KEY_PREV,   ST_AVRBF},
-    {ST_TIME,                   KEY_MINUS,  ST_MUSIC},
+    {ST_TIME,                   KEY_MINUS,  ST_ALARM_TIME},
 
     {ST_TIME_CLOCK,             KEY_PLUS,   ST_TIME_DATE},
     {ST_TIME_CLOCK,             KEY_NEXT,   ST_TIME_CLOCK_FUNC},
@@ -104,9 +106,10 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
     {ST_ALARM_TIME_ADJUST,      KEY_PREV,   ST_ALARM_TIME_FUNC},    
     //{ST_ALARM_TIME_ADJUST,      KEY_MINUS,  ST_TIME_CLOCKFORMAT_ADJUST}, 
 	
+	//{ST_ALARM_ON,      			KEY_ENTER,   ST_AVRBF},    
 //************************
 
-    {ST_MUSIC,                  KEY_PLUS,   ST_TIME},
+    {ST_MUSIC,                  KEY_PLUS,   ST_ALARM_TIME},
     {ST_MUSIC,                  KEY_NEXT,   ST_MUSIC_SELECT},
     {ST_MUSIC,                  KEY_PREV,   ST_AVRBF},
     {ST_MUSIC,                  KEY_MINUS,  ST_VCARD},
@@ -198,7 +201,14 @@ const MENU_STATE menu_state[] PROGMEM = {
     {ST_TIME_DATE_ADJUST,               MT_TIME_DATE_ADJUST,        NULL},
     {ST_TIME_DATE_ADJUST_FUNC,          NULL,                       SetDate},    
     {ST_TIME_DATEFORMAT_ADJUST,         MT_TIME_DATEFORMAT_ADJUST,  NULL},
-    {ST_TIME_DATEFORMAT_ADJUST_FUNC,    NULL,                       SetDateFormat},     
+    {ST_TIME_DATEFORMAT_ADJUST_FUNC,    NULL,                       SetDateFormat}, 
+//*****************
+	{ST_ALARM_TIME,                     MT_ALARM,                   NULL},
+    {ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
+    {ST_ALARM_TIME_ADJUST,              MT_ALARM_TIME_ADJUST,       NULL},
+    {ST_ALARM_TIME_ADJUST_FUNC,         NULL,                       SetAlarm},
+	{ST_ON_ALARM,         				NULL,                       OnAlarm},
+//*****************    
     {ST_MUSIC,                          MT_MUSIC,                   NULL},
     {ST_MUSIC_SELECT,                   NULL,                       SelectSound},
     {ST_MUSIC_PLAY,                     NULL,                       Sound},

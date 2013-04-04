@@ -113,10 +113,10 @@ __attribute__ ((OS_main)) int main(void)
     last_buttons='\0';  // mt
 
     // Initial state variables
-    state = ST_TIME_CLOCK;
-    nextstate = ST_TIME_CLOCK;
-    statetext = NULL;
-    pStateFunc = ShowClock;
+    state = ST_AVRBF;
+    nextstate = ST_AVRBF;
+    statetext = MT_AVRBF;
+    pStateFunc = NULL;
 
 
     // Program initalization
@@ -260,7 +260,29 @@ __attribute__ ((OS_main)) int main(void)
            sleep_mode();
            // mtE
         }
-
+		
+		if(gALARM)
+		{
+			gALARM = FALSE;
+			state = ST_ON_ALARM;
+			nextstate = ST_AVRBF;
+			statetext = MT_ALARM;
+			pStateFunc = &OnAlarm;
+			
+			if(PowerSave)
+            {     
+				PowerSave = FALSE;
+				
+				for(i = 0; i < 20; i++ ) // set all LCD segment register to the variable ucSegments
+				{
+					*(&pLCDREG_test + i) = 0x00;
+				}
+				
+				sbiBF(LCDCRA, 7);           // enable LCD
+				input = getkey();           // Read buttons                
+            }
+		}
+		
         // mtA
         // SMCR-reset is not needed since (from avr-libc Manual): 
         // This [the sleep_mode] macro automatically takes care to 
@@ -352,6 +374,8 @@ void Initialization(void)
     Button_Init();              // Initialize pin change interrupt on joystick
     
     RTC_init();                 // Start timer2 asynchronous, used for RTC clock
+	
+	Alarm_init();
 
     Timer0_Init();              // Used when playing music etc.
 

@@ -31,10 +31,11 @@
 #include "Alarm.h"
 #include "LCD_functions.h"
 #include "BCD.h"
-//#include "RTC.h"
+#include "RTC.h"
 
 volatile uint8_t  gALARMMINUTE;
 volatile uint8_t  gALARMHOUR;
+volatile uint8_t  gALARM;
 char _clockformat = CLOCK_24;    // set initial clock format to 24H
 
 char _TBL_CLOCK_12[] =   // table used when displaying 12H clock
@@ -57,6 +58,7 @@ void Alarm_init(void)
     // initial time and date setting
     gALARMMINUTE  = 0;
     gALARMHOUR    = 12;
+	gALARM 		  = FALSE;
 }
 
 
@@ -212,4 +214,21 @@ char SetAlarm(char input)
 
     enter_function = 0;
     return ST_ALARM_TIME_ADJUST_FUNC;
+}
+
+char CheckAlarm(char input)
+{
+	if(!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
+	{
+		gALARM = TRUE;
+	}
+	
+}
+
+char OnAlarm(char input)
+{
+	if (input != KEY_NULL)
+        return ST_AVRBF;
+	
+	return ST_ON_ALARM;
 }

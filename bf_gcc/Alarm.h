@@ -26,6 +26,7 @@
 //extern char gMONTH;
 extern volatile uint8_t  gALARMMINUTE;
 extern volatile uint8_t  gALARMHOUR;
+extern volatile uint8_t	 gALARM;
 //mtE
 
 #define CLOCK_24    1
@@ -35,4 +36,6 @@ extern volatile uint8_t  gALARMHOUR;
 void Alarm_init(void);            //initialize the Timer Counter 2 in asynchron operation
 char ShowAlarm(char input);
 char SetAlarm(char input);
+char CheckAlarm(char input);
+char OnAlarm(char input);
 
