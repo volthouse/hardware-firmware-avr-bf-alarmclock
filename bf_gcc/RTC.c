@@ -31,6 +31,7 @@
 #include "RTC.h"
 #include "LCD_functions.h"
 #include "BCD.h"
+#include "Alarm.h"
 
 // mtA
 //char gSECOND;
@@ -125,7 +126,7 @@ void RTC_init(void)
     sei(); // mt __enable_interrupt();                 // enable global interrupt
 
     // initial time and date setting
-    gSECOND  = 0;
+    gSECOND  = 50;
     gMINUTE  = 0;
     gHOUR    = 12;
     // mt release timestamp
@@ -662,6 +663,7 @@ ISR(TIMER2_OVF_vect)
     static char LeapMonth;
 
     gSECOND++;               // increment second
+	
 
     if (gSECOND == 60)
     {
@@ -669,7 +671,7 @@ ISR(TIMER2_OVF_vect)
         gMINUTE++;
         
         gPowerSaveTimer++;
-        
+		CheckAlarm(0);   
         if (gMINUTE > 59)
         {
             gMINUTE = 0;
@@ -708,7 +710,7 @@ ISR(TIMER2_OVF_vect)
                         gYEAR++;
                     }
                 }
-            }
+            }			
         }
     }
 }

@@ -33,6 +33,7 @@
 #include "BCD.h"
 #include "RTC.h"
 #include "timer0.h"
+#include "sound.h"
 
 #define CONCAT(a,b) a##b
 #ifdef USE_PINx_TOGGLE
@@ -65,7 +66,7 @@ char _TBL_CLOCK_12[] =   // table used when displaying 12H clock
 void Alarm_init(void)
 {
     // initial time and date setting
-    gALARMMINUTE  = 0;
+    gALARMMINUTE  = 1;
     gALARMHOUR    = 12;
 	gALARM 		  = FALSE;
 }
@@ -230,7 +231,9 @@ char CheckAlarm(char input)
 	if(!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
 		gALARM = TRUE;
-		Timer0_RegisterCallbackFunction(Play_Alarm);
+		
+		//Timer0_RegisterCallbackFunction(Play_Alarm);
+		PlayAlarm();
 	}
 	return 0;	
 }
@@ -239,7 +242,8 @@ char OnAlarm(char input)
 {
 	if (input != KEY_NULL)
 	{
-		Timer0_RemoveCallbackFunction(Play_Alarm);
+		//Timer0_RemoveCallbackFunction(Play_Alarm);
+		StopAlarm();
         return ST_AVRBF;
 	}
 	
@@ -248,5 +252,7 @@ char OnAlarm(char input)
 
 void Play_Alarm(void)
 {
-	TOGGLE(B,0); // TODO: Beeper Pin?
+	//TOGGLE(B, 5); // TODO: Beeper Pin?
+	
+	Play_Tune();
 }

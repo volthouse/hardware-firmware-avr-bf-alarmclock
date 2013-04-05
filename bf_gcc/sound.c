@@ -502,3 +502,25 @@ void PlayClick(void)
 	}
 }
 //mtE
+
+void PlayAlarm(void)
+{
+	pSong=(int*)pgm_read_word(&Songs[3]);
+	Duration = 0;                       // start Playing
+	Tone = 1;
+	Sound_Init();
+	//LCD_puts_f(PLAYING, 1);            
+	gPlaying = TRUE;
+	//Timer0_RegisterCallbackFunction(Play_Tune);
+}
+
+void StopAlarm(void)
+{
+	gPlaying = FALSE;
+	cbiBF(TCCR1B, 0);                     // stop Playing
+	Timer0_RemoveCallbackFunction(Play_Tune);
+	TCCR1A = 0;
+	TCCR1B = 0;
+	sbiBF(PORTB, 5);              // set OC1A high
+
+}
