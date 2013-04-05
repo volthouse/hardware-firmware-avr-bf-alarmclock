@@ -32,6 +32,15 @@
 #include "LCD_functions.h"
 #include "BCD.h"
 #include "RTC.h"
+#include "timer0.h"
+
+#define CONCAT(a,b) a##b
+#ifdef USE_PINx_TOGGLE
+#  define TOGGLE(a,b) CONCAT(PIN,a) = (1 << (b))
+#else
+#  define TOGGLE(a,b) CONCAT(PORT,a) ^= (1 << (b))
+#endif
+
 
 volatile uint8_t  gALARMMINUTE;
 volatile uint8_t  gALARMHOUR;
@@ -221,14 +230,23 @@ char CheckAlarm(char input)
 	if(!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
 		gALARM = TRUE;
+		Timer0_RegisterCallbackFunction(Play_Alarm);
 	}
-	
+	return 0;	
 }
 
 char OnAlarm(char input)
 {
 	if (input != KEY_NULL)
+	{
+		Timer0_RemoveCallbackFunction(Play_Alarm);
         return ST_AVRBF;
+	}
 	
 	return ST_ON_ALARM;
+}
+
+void Play_Alarm(void)
+{
+	TOGGLE(B,0); // TODO: Beeper Pin?
 }
