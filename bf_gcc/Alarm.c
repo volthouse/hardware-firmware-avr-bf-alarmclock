@@ -46,6 +46,8 @@
 volatile uint8_t  gALARMMINUTE;
 volatile uint8_t  gALARMHOUR;
 volatile uint8_t  gALARM;
+volatile char  	  gALARM_MODE;
+
 char _clockformat = CLOCK_24;    // set initial clock format to 24H
 
 char _TBL_CLOCK_12[] =   // table used when displaying 12H clock
@@ -66,9 +68,10 @@ char _TBL_CLOCK_12[] =   // table used when displaying 12H clock
 void Alarm_init(void)
 {
     // initial time and date setting
-    gALARMMINUTE  = 1;
-    gALARMHOUR    = 12;
-	gALARM 		  = FALSE;
+    gALARMMINUTE   = 1;
+    gALARMHOUR     = 12;
+	gALARM 		   = FALSE;
+	gALARM_MODE    = ALARM_MODE_OFF;
 }
 
 
@@ -243,7 +246,7 @@ char OnAlarm(char input)
 	if (input != KEY_NULL)
 	{
 		//Timer0_RemoveCallbackFunction(Play_Alarm);
-		StopAlarm();
+		StopPlayAlarm();
         return ST_AVRBF;
 	}
 	

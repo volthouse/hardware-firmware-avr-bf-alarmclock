@@ -514,7 +514,7 @@ void PlayAlarm(void)
 	//Timer0_RegisterCallbackFunction(Play_Tune);
 }
 
-void StopAlarm(void)
+void StopPlayAlarm(void)
 {
 	gPlaying = FALSE;
 	cbiBF(TCCR1B, 0);                     // stop Playing

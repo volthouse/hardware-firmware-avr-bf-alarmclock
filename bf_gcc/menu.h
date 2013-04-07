@@ -47,8 +47,11 @@ const char MT_OPTIONS_BOOT[] PROGMEM              = "Bootloader";
 const char MT_OPTIONS_POWER_SAVE[] PROGMEM        = "Power Save Mode";
 const char MT_OPTIONS_AUTO_POWER_SAVE[] PROGMEM   = "Auto Power Save";
 const char MT_OPTIONS_KEYCLICK[] PROGMEM          = "Key Click";
-const char MT_ALARM[] PROGMEM         			  = "Alarm";
-const char MT_ALARM_TIME_ADJUST[] PROGMEM         = "Adjust Alarm";
+const char MT_ALARM[] PROGMEM                     = "Alarm";
+const char MT_ALARM_CLOCK[] PROGMEM               = "Time";
+const char MT_ALARM_TIME_ADJUST[] PROGMEM         = "Adjust Time";
+const char MT_ALARM_TIME_MODE[] PROGMEM           = "Mode";
+const char MT_ALARM_TIME_MODE_ADJUST[] PROGMEM    = "Adjust Mode";
 // mtE
 
 // mt MENU_NEXTSTATE menu_nextstate[] = { 
@@ -97,10 +100,20 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
 
 //**********************
 	{ST_ALARM_TIME,             KEY_PLUS,   ST_TIME},
-    {ST_ALARM_TIME,             KEY_NEXT,   ST_ALARM_TIME_FUNC},
+    {ST_ALARM_TIME,             KEY_NEXT,   ST_ALARM_TIME_CLOCK},
     {ST_ALARM_TIME,             KEY_PREV,   ST_AVRBF},
     {ST_ALARM_TIME,             KEY_MINUS,  ST_MUSIC},
+    
+    {ST_ALARM_TIME_CLOCK,             KEY_PLUS,   ST_ALARM_TIME_MODE},
+    {ST_ALARM_TIME_CLOCK,             KEY_NEXT,   ST_ALARM_TIME_FUNC},
+    {ST_ALARM_TIME_CLOCK,             KEY_PREV,   ST_ALARM_TIME},
+    {ST_ALARM_TIME_CLOCK,             KEY_MINUS,  ST_ALARM_TIME_MODE},
 	
+    //{ST_ALARM_TIME_MODE,             KEY_PLUS,   ST_ALARM_MODE},
+    {ST_ALARM_TIME_MODE,             KEY_NEXT,   ST_ALARM_TIME_MODE_ADJUST_FUNC},
+    {ST_ALARM_TIME_MODE,             KEY_PREV,   ST_ALARM_TIME_CLOCK},
+    //{ST_ALARM_TIME_MODE,             KEY_MINUS,  ST_ALARM_MODE},
+    
 	//{ST_ALARM_TIME_ADJUST,      KEY_PLUS,   ST_TIME_CLOCKFORMAT_ADJUST}, 
     {ST_ALARM_TIME_ADJUST,      KEY_ENTER,  ST_ALARM_TIME_ADJUST_FUNC},
     {ST_ALARM_TIME_ADJUST,      KEY_PREV,   ST_ALARM_TIME_FUNC},    
@@ -204,10 +217,13 @@ const MENU_STATE menu_state[] PROGMEM = {
     {ST_TIME_DATEFORMAT_ADJUST_FUNC,    NULL,                       SetDateFormat}, 
 //*****************
 	{ST_ALARM_TIME,                     MT_ALARM,                   NULL},
+    {ST_ALARM_TIME_CLOCK,               MT_ALARM_CLOCK,             NULL},      
     {ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
     {ST_ALARM_TIME_ADJUST,              MT_ALARM_TIME_ADJUST,       NULL},
     {ST_ALARM_TIME_ADJUST_FUNC,         NULL,                       SetAlarm},
-	{ST_ON_ALARM,         				NULL,                       OnAlarm},
+	{ST_ON_ALARM,                       NULL,                       OnAlarm},
+    {ST_ALARM_TIME_MODE,                MT_ALARM_TIME_MODE,         NULL},
+    //{ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
 //*****************    
     {ST_MUSIC,                          MT_MUSIC,                   NULL},
     {ST_MUSIC_SELECT,                   NULL,                       SelectSound},

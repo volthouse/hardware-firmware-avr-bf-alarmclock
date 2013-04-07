@@ -6,7 +6,7 @@ void Play_Tune(void);
 void PlayClick(void); // mt
 
 void PlayAlarm(void);
-void StopAlarm(void);
+void StopPlayAlarm(void);
 
 // global variable to prevent entering power save, when playing.
 extern volatile char gPlaying; 
