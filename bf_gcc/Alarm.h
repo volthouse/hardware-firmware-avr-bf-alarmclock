@@ -39,4 +39,4 @@ char OnAlarm(char input);
 void Play_Alarm(void);
 
 char ShowAlarmMode(char input);
-char SetAlarmMode(char input)
+char SetAlarmMode(char input);

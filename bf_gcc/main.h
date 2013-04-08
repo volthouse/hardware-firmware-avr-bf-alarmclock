@@ -93,5 +93,6 @@ void OSCCAL_calibration(void);
 #define ST_ALARM_TIME_CLOCK             115
 #define ST_ALARM_TIME_MODE              116
 #define ST_ALARM_TIME_MODE_FUNC         117
-#define ST_ALARM_TIME_MODE_ADJUST_FUNC  118
+#define ST_ALARM_TIME_MODE_ADJUST       118
+#define ST_ALARM_TIME_MODE_ADJUST_FUNC  119
 #define ST_ON_ALARM                     125

@@ -104,20 +104,23 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
     {ST_ALARM_TIME,             KEY_PREV,   ST_AVRBF},
     {ST_ALARM_TIME,             KEY_MINUS,  ST_MUSIC},
     
-    {ST_ALARM_TIME_CLOCK,             KEY_PLUS,   ST_ALARM_TIME_MODE},
-    {ST_ALARM_TIME_CLOCK,             KEY_NEXT,   ST_ALARM_TIME_FUNC},
-    {ST_ALARM_TIME_CLOCK,             KEY_PREV,   ST_ALARM_TIME},
-    {ST_ALARM_TIME_CLOCK,             KEY_MINUS,  ST_ALARM_TIME_MODE},
+    {ST_ALARM_TIME_CLOCK,       KEY_PLUS,   ST_ALARM_TIME_MODE},
+    {ST_ALARM_TIME_CLOCK,       KEY_NEXT,   ST_ALARM_TIME_FUNC},
+    {ST_ALARM_TIME_CLOCK,       KEY_PREV,   ST_ALARM_TIME},
+    {ST_ALARM_TIME_CLOCK,       KEY_MINUS,  ST_ALARM_TIME_MODE},
 	
-    //{ST_ALARM_TIME_MODE,             KEY_PLUS,   ST_ALARM_MODE},
-    {ST_ALARM_TIME_MODE,             KEY_NEXT,   ST_ALARM_TIME_MODE_ADJUST_FUNC},
-    {ST_ALARM_TIME_MODE,             KEY_PREV,   ST_ALARM_TIME_CLOCK},
-    //{ST_ALARM_TIME_MODE,             KEY_MINUS,  ST_ALARM_MODE},
+    {ST_ALARM_TIME_MODE,        KEY_PLUS,   ST_ALARM_TIME_CLOCK},
+    {ST_ALARM_TIME_MODE,        KEY_NEXT,   ST_ALARM_TIME_MODE_FUNC},
+    {ST_ALARM_TIME_MODE,        KEY_PREV,   ST_ALARM_TIME},
+    {ST_ALARM_TIME_MODE,        KEY_MINUS,  ST_ALARM_TIME_CLOCK},
     
-	//{ST_ALARM_TIME_ADJUST,      KEY_PLUS,   ST_TIME_CLOCKFORMAT_ADJUST}, 
     {ST_ALARM_TIME_ADJUST,      KEY_ENTER,  ST_ALARM_TIME_ADJUST_FUNC},
     {ST_ALARM_TIME_ADJUST,      KEY_PREV,   ST_ALARM_TIME_FUNC},    
-    //{ST_ALARM_TIME_ADJUST,      KEY_MINUS,  ST_TIME_CLOCKFORMAT_ADJUST}, 
+   
+    {ST_ALARM_TIME_MODE_ADJUST, KEY_PLUS,   ST_ALARM_TIME_MODE_ADJUST},
+    {ST_ALARM_TIME_MODE_ADJUST, KEY_ENTER,  ST_ALARM_TIME_MODE_FUNC},
+    {ST_ALARM_TIME_MODE_ADJUST, KEY_PREV,   ST_ALARM_TIME_MODE},
+    {ST_ALARM_TIME_MODE_ADJUST, KEY_MINUS,  ST_ALARM_TIME_MODE_ADJUST},
 	
 	//{ST_ALARM_ON,      			KEY_ENTER,   ST_AVRBF},    
 //************************
@@ -222,7 +225,6 @@ const MENU_STATE menu_state[] PROGMEM = {
     {ST_ALARM_TIME_ADJUST,              MT_ALARM_TIME_ADJUST,       NULL},
     {ST_ALARM_TIME_ADJUST_FUNC,         NULL,                       SetAlarm},
 	{ST_ON_ALARM,                       NULL,                       OnAlarm},
-    {ST_ALARM_TIME_MODE,                MT_ALARM_TIME_MODE,         NULL},
     //{ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
 //*****************    
     {ST_MUSIC,                          MT_MUSIC,                   NULL},
@@ -254,10 +256,10 @@ const MENU_STATE menu_state[] PROGMEM = {
     {ST_OPTIONS_KEYCLICK_FUNC,          NULL,                       KeyClick},
 
 //*****************
-    {ST_ALARM_TIME,                     MT_TIME_CLOCK,              NULL},
-    {ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
-    {ST_ALARM_TIME_ADJUST,              MT_TIME_CLOCK_ADJUST,       NULL},
-    {ST_ALARM_TIME_ADJUST_FUNC,         NULL,                       SetAlarm},
+    {ST_ALARM_TIME_MODE,                MT_ALARM_TIME_MODE,         NULL},
+    {ST_ALARM_TIME_MODE_FUNC,           NULL,                       ShowAlarmMode},
+    {ST_ALARM_TIME_MODE_ADJUST,         MT_ALARM_TIME_MODE_ADJUST,  NULL},
+    {ST_ALARM_TIME_MODE_ADJUST_FUNC,    NULL,                       SetAlarmMode},
 //*****************
 
     {0,                                 NULL,                       NULL},
