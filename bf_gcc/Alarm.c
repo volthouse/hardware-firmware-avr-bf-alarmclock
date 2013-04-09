@@ -234,9 +234,7 @@ char CheckAlarm(char input)
 {
 	if(!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
-		gALARM = TRUE;
-		
-		//Timer0_RegisterCallbackFunction(Play_Alarm);
+		gALARM = TRUE;		
 		PlayAlarm();
 	}
 	return 0;	
@@ -246,7 +244,6 @@ char OnAlarm(char input)
 {
 	if (input != KEY_NULL)
 	{
-		//Timer0_RemoveCallbackFunction(Play_Alarm);
 		StopPlayAlarm();
         return ST_AVRBF;
 	}
@@ -270,10 +267,10 @@ char ShowAlarmMode(char input)
 			LCD_puts_f(PSTR("Off"),0);
 			break;
 		case ALARM_MODE_1_5:
-			LCD_puts("1-5",0);
+			LCD_puts_f(PSTR("1-5"),0);
 			break;
 		case ALARM_MODE_6_7:
-			LCD_puts("6-7",0);
+			LCD_puts_f(PSTR("6-7"),0);
 			break;
 	}    
 
@@ -282,7 +279,7 @@ char ShowAlarmMode(char input)
     if (input == KEY_PREV)
         return ST_ALARM_TIME;
     else if (input == KEY_NEXT)
-        return ST_ALARM_TIME_MODE_ADJUST_FUNC;
+        return ST_ALARM_TIME_MODE_ADJUST;
       
     return ST_ALARM_TIME_MODE_FUNC;
 }
@@ -305,13 +302,13 @@ char SetAlarmMode(char input)
     LCD_UpdateRequired(TRUE, 0);
     
     // Increment/decrement mode
-    if (input == KEY_PLUS)
+    if (input == KEY_PLUS && gALARM_MODE < ALARM_MODE_6_7)
         gALARM_MODE++;
-    else if (input == KEY_MINUS)
+    else if (input == KEY_MINUS && gALARM_MODE > ALARM_MODE_OFF)
         gALARM_MODE--;
     else if (input == KEY_ENTER)
     {
-        return ST_ALARM_TIME_FUNC;
+        return ST_ALARM_TIME_MODE_FUNC;
     }
     return ST_ALARM_TIME_MODE_ADJUST_FUNC;
 }
