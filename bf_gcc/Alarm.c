@@ -277,7 +277,7 @@ char ShowAlarmMode(char input)
     LCD_UpdateRequired(TRUE, 0);
 
     if (input == KEY_PREV)
-        return ST_ALARM_TIME;
+        return ST_ALARM_TIME_MODE;
     else if (input == KEY_NEXT)
         return ST_ALARM_TIME_MODE_ADJUST;
       
