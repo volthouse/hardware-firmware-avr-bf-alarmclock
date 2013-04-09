@@ -373,9 +373,9 @@ void Initialization(void)
             
     Button_Init();              // Initialize pin change interrupt on joystick
     
+    Alarm_init();
+    
     RTC_init();                 // Start timer2 asynchronous, used for RTC clock
-	
-	Alarm_init();
 
     Timer0_Init();              // Used when playing music etc.
 

@@ -69,7 +69,7 @@ char _TBL_CLOCK_12[] =   // table used when displaying 12H clock
 void Alarm_init(void)
 {
     // initial time and date setting
-    gALARMMINUTE   = 1;
+    gALARMMINUTE   = 0;
     gALARMHOUR     = 12;
 	gALARM 		   = FALSE;
 	gALARM_MODE    = ALARM_MODE_OFF;
@@ -232,7 +232,7 @@ char SetAlarm(char input)
 
 char CheckAlarm(char input)
 {
-	if(!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
+	if(gALARM_MODE != ALARM_MODE_OFF &&!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
 		gALARM = TRUE;		
 		PlayAlarm();
@@ -292,10 +292,10 @@ char SetAlarmMode(char input)
 			LCD_puts_f(PSTR("Off"),0);
 			break;
 		case ALARM_MODE_1_5:
-			LCD_puts("1-5",0);
+			LCD_puts_f(PSTR("1-5"),0);
 			break;
 		case ALARM_MODE_6_7:
-			LCD_puts("6-7",0);
+			LCD_puts_f(PSTR("6-7"),0);
 			break;
 	}    
 
