@@ -66,21 +66,6 @@ const int TEMP_Fahrenheit_pos[] PROGMEM =  // Positive Fahrenheit temperatures (
 			222, 219, 215, 211, 207, 204, 200, 197, 194, 190, 187, 
 		};
 
-        
-// mt __flash int LIGHT_ADC[] = // Table used to find the Vref, when using the voltage-reading function 
-const int LIGHT_ADC[] PROGMEM = // Table used to find the Vref, when using the voltage-reading function 
-        { 
-            0x35,0x60,0x80,0x0B0,0x11D,0x13D,0x15A,0x17A,0x197,0x1B9,0x1DA,
-            0x1F9,0x216,0x240,0x26D,0x282,0x2A2,0x2EF,0x332,0x3B0,0x3F2
-        };
-        
-//mt __flash float LIGHT_VOLTAGE[] = // Vref table correspondent to the LIGHT_ADC[] table
-const float LIGHT_VOLTAGE[] PROGMEM = // Vref table correspondent to the LIGHT_ADC[] table
-        {
-            2.818,2.820,2.824,2.827,2.832,2.835,2.839,2.841,2.843,2.847,2.850,
-            2.853,2.857,2.863,2.867,2.870,2.874,2.882,2.893,2.917,2.939
-        };
-
 
 float Vref = 2.900; // initial value
 char degree = CELSIUS; // char degree = CELCIUS;
@@ -174,18 +159,12 @@ int ADC_read(void)
 void ADC_periphery(void)
 {
     int ADCresult = 0;
-    int ADCresult_temp = 0;
     int Temp_int;
     char Temp;
     unsigned char i = 0;
     char TL;
     char TH;
-    char VL;
-
-    float V_ADC;
-    char VoltageHB;
-    char VoltageLB;
-    
+   
     ADCresult = ADC_read();         // Find the ADC value
      
     if( ADMUX == TEMPERATURE_SENSOR )
@@ -272,104 +251,8 @@ void ADC_periphery(void)
             LCD_putc(6, '\0');
         
         }
-
-//        Can't set LCD_UpdateRequired = TRUE here cause we are inside the Timer0 interrupt
-//        LCD_UpdateRequired(TRUE, 0);        
-
     }
-    else if( ADMUX == VOLTAGE_SENSOR )
-    {
-        //  Do a Light-measurement first to determine the Vref, 
-        //  because the LDR affects the Vref 
-
-        ADCresult_temp = ADCresult;     // Store the ADCresult from the voltage reading
-          
-        ADC_init(LIGHT_SENSOR);         // Init the ADC to measure light
-            
-        ADCresult = ADC_read();         // Read the light value
-
-        // Find Vref
-        for (i=0; i<=22; i++)
-        {
-            // mt if (ADCresult <= LIGHT_ADC[i])
-            if (ADCresult <= (int)pgm_read_word(&LIGHT_ADC[i]))
-            {
-                break;
-            }
-        }
-        if(!i)              // if it's very bright
-            Vref = 2.815;
-        else if(i >= 21)
-            Vref = 2.942;   // if it's totally dark
-        else {
-            // mt: Vref = LIGHT_VOLTAGE[i];   
-            // mt using helper from pgmspacehlp.h - new code
-            Vref = pgm_read_float_hlp(&LIGHT_VOLTAGE[i]);
-        }
-          
-        ADMUX = VOLTAGE_SENSOR;     
-        ADCresult = ADCresult_temp; // Get the ADCresult from the voltage reading
-
-        // Light-measurement finished
-
-        V_ADC = ( ADCresult * Vref ) / 1024; // Calculate the voltage
-           
-        V_ADC = ( V_ADC * 6 );      // Multiply by 6 cause of the voltage division
-            
-        VoltageHB = V_ADC;              // Store the high-byte
-        V_ADC = ( V_ADC - VoltageHB );
-        VoltageLB = ( V_ADC * 100 );    // Store the low-byte
-     
-        Temp = CHAR2BCD2(VoltageHB);    // Convert from char to bin
     
-        TL = (Temp & 0x0F) + '0';
-        TH = (Temp >> 4) + '0';
-            
-        Temp = CHAR2BCD2(VoltageLB);    // Convert from char to bin
-   
-        VL = (Temp >> 4) + '0';
-
-        LCD_putc(0, ' ');
-        LCD_putc(1, ' ');
-        LCD_putc(2, ' ');
-        LCD_putc(3, TL);
-        LCD_putc(4, 'V');
-        LCD_putc(5, VL);
-        LCD_putc(6, '\0');
-        
-//        Can't set LCD_UpdateRequired = TRUE here cause we are inside the Timer0 interrupt
-//        LCD_UpdateRequired(TRUE, 0);
-                             
-    }
-    else if( ADMUX == LIGHT_SENSOR )
-    {
-        // The relation between ADC-value and lux is yet to be found, 
-        // for now the ADC-value is presented on the LCD
-        
-        VoltageHB = CHAR2BCD2(ADCH);    // Convert from char to bin
-
-        Temp = ADCL;                
-    
-        TL = (Temp & 0x0F) + '0';       
-        if(TL > '9')        // if the hex-value is over 9, add 7 in order to go 
-            TL += 7;        // jump to the character in the ASCII-table
-                
-        TH = (Temp >> 4) + '0';
-        if(TH > '9')        // if the hex-value is over 9, add 7 in order to go 
-            TH += 7;        // jump to the character in the ASCII-table
-            
-        LCD_putc(0, 'A');
-        LCD_putc(1, 'D');
-        LCD_putc(2, 'C');
-        LCD_putc(3, (ADCH + 0x30));
-        LCD_putc(4, TH);
-        LCD_putc(5, TL);
-        LCD_putc(6, '\0');
-
-//        Can't set LCD_UpdateRequired = TRUE here cause we are inside the Timer0 interrupt
-//        LCD_UpdateRequired(TRUE, 0);        
-
-    }
 }
 
 
@@ -429,86 +312,3 @@ char TemperatureFunc(char input)
 }
 
 
-/*****************************************************************************
-*
-*   Function name : VoltageFunc
-*
-*   Returns :       char ST_state (to the state-machine)
-*
-*   Parameters :    char input (from joystick)
-*
-*   Purpose :       Enable or disable voltage measurements
-*
-*****************************************************************************/
-char VoltageFunc(char input)
-{
-    static char enter = 1;
-    
-    if (enter)
-    {
-        enter = 0;
-
-        ADC_init(VOLTAGE_SENSOR);       // Init the ADC
-        
-        // Enable auto-run of the ADC_perphery every 10ms 
-        // (it will actually be more than 10ms cause of the SLEEP)        
-        Timer0_RegisterCallbackFunction(ADC_periphery);        
-    }
-    else
-        LCD_UpdateRequired(TRUE, 0); 
-
-    if (input == KEY_PREV)
-    {
-        // Disable the auto-run of the ADC_periphery        
-        Timer0_RemoveCallbackFunction(ADC_periphery);
-        
-        enter = 1;  // Set enter to 1 before leaving the TemperatureFunc
-        
-        return ST_VOLTAGE;
-    }
-    else
-        return ST_VOLTAGE_FUNC;    
-}
-
-
-/*****************************************************************************
-*
-*   Function name : LightFunc
-*
-*   Returns :       char ST_state (to the state-machine)
-*
-*   Parameters :    char input (from joystick)
-*
-*   Purpose :       Enable or disable light measurements
-*
-*****************************************************************************/
-char LightFunc(char input)
-{
-    static char enter = 1;
-    
-    if (enter)
-    {
-    
-        enter = 0;
-        
-        ADC_init(LIGHT_SENSOR);     // Init the ADC
-        
-        // Enable auto-run of the ADC_perphery every 10ms 
-        // (it will actually be more than 10ms cause of the SLEEP)  
-        Timer0_RegisterCallbackFunction(ADC_periphery);        
-    }
-    else
-        LCD_UpdateRequired(TRUE, 0); 
-
-    if (input == KEY_PREV)
-    {
-        // Disable the auto-run of the ADC_periphery      
-        Timer0_RemoveCallbackFunction(ADC_periphery);
-        
-        enter = 1;  // Set enter to 1 before leaving the TemperatureFunc
-    
-        return ST_LIGHT;
-    }
-    else
-        return ST_LIGHT_FUNC;    
-}

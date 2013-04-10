@@ -230,14 +230,35 @@ char SetAlarm(char input)
     return ST_ALARM_TIME_ADJUST_FUNC;
 }
 
-char CheckAlarm(char input)
+void CheckAlarm(void)
 {
 	if(gALARM_MODE != ALARM_MODE_OFF &&!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
-		gALARM = TRUE;		
-		PlayAlarm();
+		char day1 = -1;
+		char day2 = -1;
+		
+		switch(gALARM_MODE)
+		{			
+			case ALARM_MODE_1_5:
+				day1 = 1;
+				day2 = 5;
+				break;
+			case ALARM_MODE_6_7:
+				day1 = 6;
+				day2 = 7;
+				break;
+			default:
+				return;
+		} 
+		
+		char day = Dayofweek(gDAY, gMONTH, gYEAR);
+		
+		if(day >= day1 && day <= day2)
+		{
+			gALARM = TRUE;		
+			PlayAlarm();
+		}
 	}
-	return 0;	
 }
 
 char OnAlarm(char input)

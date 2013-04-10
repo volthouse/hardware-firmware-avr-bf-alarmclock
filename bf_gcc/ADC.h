@@ -1,6 +1,4 @@
 #define TEMPERATURE_SENSOR  0
-#define VOLTAGE_SENSOR      1
-#define LIGHT_SENSOR        2
 //#define CELCIUS             3
 //#define FARENHEIT           4
 #define CELSIUS             3
@@ -15,8 +13,3 @@ void ADC_periphery(void);
 // Temperature sensor function
 char TemperatureFunc(char);
 
-// Voltage reader function
-char VoltageFunc(char);
-
-// Light sensor function
-char LightFunc(char);

@@ -80,7 +80,7 @@ OBJDIR = .
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC = $(TARGET).c
-SRC += timer0.c BCD.c ADC.c usart.c RTC.c Alarm.c
+SRC += timer0.c BCD.c usart.c ADC.c RTC.c Alarm.c
 SRC += bfeeprom.c dataflash.c button.c
 SRC += LCD_functions.c LCD_driver.c 
 SRC += sound.c 

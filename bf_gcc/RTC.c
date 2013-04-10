@@ -714,3 +714,14 @@ ISR(TIMER2_OVF_vect)
         }
     }
 }
+
+char Dayofweek(uint8_t day, uint8_t month, uint16_t year)
+{
+   /** Zeller's congruence for the Gregorian calendar. **/
+   /** With 0=Monday, ... 5=Saturday, 6=Sunday         **/
+   if (month < 3) {
+      month += 12;
+      year--;
+   }
+   return ((13*month+3)/5 + day + year + year/4 - year/100 + year/400) % 7;
+}

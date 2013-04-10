@@ -44,5 +44,7 @@ char ShowDate(char input);
 char SetDate(char input);
 char SetDateFormat(char input);
 
+char Dayofweek(uint8_t day, uint8_t month, uint16_t year);
+
 #define CLOCK_24    1
 #define CLOCK_12    0

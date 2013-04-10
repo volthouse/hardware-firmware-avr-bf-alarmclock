@@ -34,6 +34,7 @@
 #include "sound.h"
 #include "RTC.h"
 #include "dataflash.h"
+#include "ADC.h"
 
 #define pLCDREG_test (*(char *)(0xEC))
 
@@ -52,7 +53,6 @@ void Test(void)
 {
     char input = 0;
     char i;
-    char j;
     
     int integer;
     int temp_hi;

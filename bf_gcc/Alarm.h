@@ -34,7 +34,7 @@ extern volatile char	 gALARM_MODE;
 void Alarm_init(void);            //initialize the Timer Counter 2 in asynchron operation
 char ShowAlarm(char input);
 char SetAlarm(char input);
-char CheckAlarm(char input);
+void CheckAlarm(void)
 char OnAlarm(char input);
 void Play_Alarm(void);
 
