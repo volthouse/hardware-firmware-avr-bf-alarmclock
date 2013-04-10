@@ -32,7 +32,6 @@
 #include "LCD_driver.h"
 #include "LCD_functions.h"
 #include "sound.h"
-#include "ADC.h"
 #include "RTC.h"
 #include "dataflash.h"
 
@@ -171,72 +170,6 @@ void Test(void)
         LCD_UpdateRequired(TRUE, 0);
         TestWaitEnter();
     }
-
-
-//// //// //// //// Voltage TEST //// //// //// ////    
-
-    ADC_init(1);
-    integer = ADC_read();
-
-    //if measuring outside 4,8 to 5,2 V
-    if( (integer < 298) || (integer > 320) )
-    {
-        LCD_puts_f(PSTR("Error Voltage"),0);// mt LCD_puts("Error Voltage",0);
-        ErrorBeep();
-        TestWaitEnter();
-        ADC_periphery();
-        LCD_UpdateRequired(TRUE, 0);
-        TestWaitEnter();
-    }
-
-
-//// //// //// //// LIGHT TEST //// //// //// ////    
-
-    LCD_puts_f(PSTR("Light"),0);// mt LCD_puts("Light",0);
-    TestWaitEnter();
-
-    ADC_init(2);
-    input = 0;
-    
-    while(input != KEY_ENTER)
-    {
-        ADC_read();
-        ADC_periphery();
-        // mt __no_operation();
-        asm volatile ("nop"::);
-        LCD_UpdateRequired(TRUE, 0);    
-        input = getkey();           // Read buttons
-    }
-
-
-    DF_CS_inactive;
-    DF_CS_active;
-    
-    for(j=0;j<50;j++) {
-        Buffer_Write_Byte (1,j,j);
-    }
-
-    Buffer_To_Page (1,1);             //transfer to DataFlash
-
-    DF_CS_inactive;
-    DF_CS_active;
-    
-    Cont_Flash_Read_Enable (1,0);
-
-    for(j=0;j<50;j++)
-    {
-        
-        if(j != DF_SPI_RW(0x00) )
-        {
-            LCD_puts_f(PSTR("Error DataFlash"),0);// mt LCD_puts("Error Dataflash",0);
-            ErrorBeep();
-            TestWaitEnter();
-            break;
-        }
-    }
-
-    DF_CS_inactive;
-
 
 
 //// //// //// //// Display version# //// //// //// ////  

@@ -33,11 +33,7 @@ const char MT_TIME_DATE[] PROGMEM                 = "Date";
 const char MT_TIME_DATE_ADJUST[] PROGMEM          = "Adjust Date";
 const char MT_TIME_DATEFORMAT_ADJUST[] PROGMEM    = "Change Date Format";
 const char MT_MUSIC[] PROGMEM                     = "Music";
-const char MT_VCARD[] PROGMEM                     = "Name";
-const char MT_ENTERNAME[] PROGMEM                 = "Enter name";
 const char MT_TEMPERATURE[] PROGMEM               = "Temperature";
-const char MT_VOLTAGE[] PROGMEM                   = "Voltage";
-const char MT_LIGHT[] PROGMEM                     = "Light";
 const char MT_OPTIONS[] PROGMEM                   = "Options";
 const char MT_OPTIONS_DISPLAY[] PROGMEM           = "Display";
 const char MT_OPTIONS_DISPLAY_CONTRAST[] PROGMEM  = "Adjust contrast";
@@ -128,42 +124,17 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
     {ST_MUSIC,                  KEY_PLUS,   ST_ALARM_TIME},
     {ST_MUSIC,                  KEY_NEXT,   ST_MUSIC_SELECT},
     {ST_MUSIC,                  KEY_PREV,   ST_AVRBF},
-    {ST_MUSIC,                  KEY_MINUS,  ST_VCARD},
+    {ST_MUSIC,                  KEY_MINUS,  ST_TEMPERATURE},
 
     {ST_SOUND_MUSIC,            KEY_NEXT,   ST_MUSIC_SELECT},
     {ST_SOUND_MUSIC,            KEY_PREV,   ST_MUSIC},
 
-    {ST_VCARD,                  KEY_PLUS,   ST_MUSIC},
-    {ST_VCARD,                  KEY_NEXT,   ST_VCARD_FUNC},
-    {ST_VCARD,                  KEY_PREV,   ST_AVRBF},
-    {ST_VCARD,                  KEY_MINUS,  ST_TEMPERATURE},
-
-    {ST_VCARD_ENTER_NAME,       KEY_PLUS,     ST_VCARD_DOWNLOAD_NAME},
-    {ST_VCARD_ENTER_NAME,       KEY_ENTER,    ST_VCARD_ENTER_NAME_FUNC},
-    {ST_VCARD_ENTER_NAME,       KEY_PREV,     ST_VCARD_FUNC},    
-    {ST_VCARD_ENTER_NAME,       KEY_MINUS,    ST_VCARD_DOWNLOAD_NAME},
-
-    {ST_VCARD_DOWNLOAD_NAME,    KEY_PLUS,     ST_VCARD_ENTER_NAME},
-    {ST_VCARD_DOWNLOAD_NAME,    KEY_ENTER,    ST_VCARD_DOWNLOAD_NAME_FUNC},
-    {ST_VCARD_DOWNLOAD_NAME,    KEY_PREV,     ST_VCARD_FUNC},    
-    {ST_VCARD_DOWNLOAD_NAME,    KEY_MINUS,    ST_VCARD_ENTER_NAME},    
-
-    {ST_TEMPERATURE,            KEY_PLUS,   ST_VCARD},
+    {ST_TEMPERATURE,            KEY_PLUS,   ST_MUSIC},
     {ST_TEMPERATURE,            KEY_NEXT,   ST_TEMPERATURE_FUNC},
     {ST_TEMPERATURE,            KEY_PREV,   ST_AVRBF},
-    {ST_TEMPERATURE,            KEY_MINUS,  ST_VOLTAGE},
+    {ST_TEMPERATURE,            KEY_MINUS,  ST_OPTIONS},
 
-    {ST_VOLTAGE,                KEY_PLUS,   ST_TEMPERATURE},
-    {ST_VOLTAGE,                KEY_NEXT,   ST_VOLTAGE_FUNC},
-    {ST_VOLTAGE,                KEY_PREV,   ST_AVRBF},
-    {ST_VOLTAGE,                KEY_MINUS,  ST_LIGHT},
-
-    {ST_LIGHT,                  KEY_PLUS,   ST_VOLTAGE},
-    {ST_LIGHT,                  KEY_NEXT,   ST_LIGHT_FUNC},
-    {ST_LIGHT,                  KEY_PREV,   ST_AVRBF},
-    {ST_LIGHT,                  KEY_MINUS,  ST_OPTIONS},
-
-    {ST_OPTIONS,                KEY_PLUS,   ST_LIGHT},
+    {ST_OPTIONS,                KEY_PLUS,   ST_TEMPERATURE},
     {ST_OPTIONS,                KEY_NEXT,   ST_OPTIONS_DISPLAY},
     {ST_OPTIONS,                KEY_PREV,   ST_AVRBF},
     {ST_OPTIONS,                KEY_MINUS,  ST_AVRBF},
@@ -229,19 +200,9 @@ const MENU_STATE menu_state[] PROGMEM = {
 //*****************    
     {ST_MUSIC,                          MT_MUSIC,                   NULL},
     {ST_MUSIC_SELECT,                   NULL,                       SelectSound},
-    {ST_MUSIC_PLAY,                     NULL,                       Sound},
-    {ST_VCARD,                          MT_VCARD,                   NULL},
-    {ST_VCARD_FUNC,                     NULL,                       vCard},
-    {ST_VCARD_ENTER_NAME,               MT_ENTERNAME,               NULL},
-    {ST_VCARD_DOWNLOAD_NAME,            MT_VCARD_DOWNLOAD_NAME,     NULL},
-    {ST_VCARD_ENTER_NAME_FUNC,          NULL,                       EnterName},
-    {ST_VCARD_DOWNLOAD_NAME_FUNC,       NULL,                       RS232},
+    {ST_MUSIC_PLAY,                     NULL,                       Sound},    
     {ST_TEMPERATURE,                    MT_TEMPERATURE,             NULL},
-    {ST_TEMPERATURE_FUNC,               NULL,                       TemperatureFunc},
-    {ST_VOLTAGE,                        MT_VOLTAGE,                 NULL},
-    {ST_VOLTAGE_FUNC,                   NULL,                       VoltageFunc},
-    {ST_LIGHT,                          MT_LIGHT,                   NULL},
-    {ST_LIGHT_FUNC,                     NULL,                       LightFunc},
+    {ST_TEMPERATURE_FUNC,               NULL,                       TemperatureFunc},    
     {ST_OPTIONS,                        MT_OPTIONS,                 NULL},
     {ST_OPTIONS_DISPLAY,                MT_OPTIONS_DISPLAY,         NULL},
     {ST_OPTIONS_DISPLAY_CONTRAST,       MT_OPTIONS_DISPLAY_CONTRAST,NULL},

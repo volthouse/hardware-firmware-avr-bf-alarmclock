@@ -219,7 +219,7 @@ __attribute__ ((OS_main)) int main(void)
         
         
         // go to SLEEP
-        if(!gPlaying && !gUART)              // Do not enter Power save if using UART or playing tunes
+        if(!gPlaying)              // Do not enter Power save if using UART or playing tunes
         {
             if(PowerSave)
                 cbiBF(LCDCRA, 7);             // disable LCD
