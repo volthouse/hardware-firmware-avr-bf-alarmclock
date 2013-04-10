@@ -31,3 +31,4 @@ void LCD_Clear(void);
 void LCD_Colon(char show);
 void LCD_FlashReset(void);
 char SetContrast(char input);
+void LCD_AlarmSign(char show);

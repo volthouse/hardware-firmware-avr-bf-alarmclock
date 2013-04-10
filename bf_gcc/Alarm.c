@@ -34,6 +34,7 @@
 #include "RTC.h"
 #include "timer0.h"
 #include "sound.h"
+#include "usart.h"
 
 #define CONCAT(a,b) a##b
 #ifdef USE_PINx_TOGGLE
@@ -232,7 +233,7 @@ char SetAlarm(char input)
 
 void CheckAlarm(void)
 {
-	if(gALARM_MODE != ALARM_MODE_OFF &&!gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
+	if(gALARM_MODE != ALARM_MODE_OFF && !gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
 		char day1 = -1;
 		char day2 = -1;
@@ -240,12 +241,12 @@ void CheckAlarm(void)
 		switch(gALARM_MODE)
 		{			
 			case ALARM_MODE_1_5:
-				day1 = 1;
-				day2 = 5;
+				day1 = 0;
+				day2 = 4;
 				break;
 			case ALARM_MODE_6_7:
-				day1 = 6;
-				day2 = 7;
+				day1 = 5;
+				day2 = 6;
 				break;
 			default:
 				return;
@@ -311,12 +312,15 @@ char SetAlarmMode(char input)
 	{
 		case ALARM_MODE_OFF:
 			LCD_puts_f(PSTR("Off"),0);
+            LCD_AlarmSign(0);
 			break;
 		case ALARM_MODE_1_5:
 			LCD_puts_f(PSTR("1-5"),0);
+            LCD_AlarmSign(1);
 			break;
 		case ALARM_MODE_6_7:
 			LCD_puts_f(PSTR("6-7"),0);
+            LCD_AlarmSign(1);
 			break;
 	}    
 

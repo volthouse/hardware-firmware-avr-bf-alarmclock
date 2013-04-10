@@ -292,4 +292,7 @@ char SetContrast(char input)
     return ST_OPTIONS_DISPLAY_CONTRAST_FUNC;
 }
 
-
+void LCD_AlarmSign(char show)
+{
+    gAlarmSign = show;
+}

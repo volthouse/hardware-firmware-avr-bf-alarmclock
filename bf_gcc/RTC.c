@@ -671,7 +671,7 @@ ISR(TIMER2_OVF_vect)
         gMINUTE++;
         
         gPowerSaveTimer++;
-		CheckAlarm(0);   
+		CheckAlarm();   
         if (gMINUTE > 59)
         {
             gMINUTE = 0;

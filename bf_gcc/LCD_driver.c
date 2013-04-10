@@ -72,6 +72,7 @@ volatile char gFlashTimer = 0;
 // Turns on/off the colons on the LCD
 char gColon = 0;
 
+char gAlarmSign = 0;
 
 // Look-up table used when converting ASCII to
 // LCD display data (segment control)
@@ -387,6 +388,11 @@ ISR(LCD_vect)
             *(pLCDREG + 8) = 0x01;
         else
             *(pLCDREG + 8) = 0x00;
+
+        if (gAlarmSign)
+            *(pLCDREG) |= 0x04;
+        else
+            *(pLCDREG) &= ~0x04;
 
         // If the text scrolled off the display,
         // we have to start over again.

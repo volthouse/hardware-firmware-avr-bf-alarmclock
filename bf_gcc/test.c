@@ -138,9 +138,17 @@ void Test(void)
     
     cbiBF(LCDCRA, LCDIE);
     
+    
+    for(i = 0; i < 7; i++) // set all LCD segment register to the variable ucSegments
+    {
+        *(&pLCDREG_test + 0) = 1 << i;
+        Delay(1000);
+    }
+    
     for(i = 0; i < 20; i++) // set all LCD segment register to the variable ucSegments
     {
         *(&pLCDREG_test + i) = 0xFF;
+        //Delay(1000);
     }
     
     // mt while(!(PINB & (1<<PORTB4)));

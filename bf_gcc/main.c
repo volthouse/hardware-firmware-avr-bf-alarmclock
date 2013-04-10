@@ -123,6 +123,8 @@ __attribute__ ((OS_main)) int main(void)
     Initialization();
     sei(); // mt __enable_interrupt();
 
+//Test();
+
     for (;;)            // Main loop
     {
         if(!PowerSave)          // Do not enter main loop in power-save

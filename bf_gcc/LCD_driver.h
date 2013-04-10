@@ -58,6 +58,7 @@ extern volatile char gFlashTimer;
 extern char gColon;
 extern volatile signed char gScroll;
 extern volatile char gAutoPressJoystick;
+extern char gAlarmSign;
 
 /************************************************************************/
 // Global functions
