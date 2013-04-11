@@ -15,6 +15,8 @@ void Delay(unsigned int millisec);
 char Revision(char input);
 void OSCCAL_calibration(void);
 
+char ShowInfo(char input);
+
 #define BOOL    char
 
 #ifndef FALSE

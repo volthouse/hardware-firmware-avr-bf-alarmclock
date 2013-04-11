@@ -128,6 +128,29 @@ void Play_Alarm(void)
 	Play_Tune();
 }
 
+char IsAlarmActiveToday()
+{
+    char day1 = -1;
+    char day2 = -1;
+    switch(gALARM_MODE)
+    {			
+        case ALARM_MODE_1_5:
+            day1 = 0;
+            day2 = 4;
+            break;
+        case ALARM_MODE_6_7:
+            day1 = 5;
+            day2 = 6;
+            break;
+        default:
+            return 0;
+    } 
+    
+    char day = Dayofweek(gDAY, gMONTH, gYEAR);
+    
+    return day >= day1 && day <= day2;
+}
+
 /*****************************************************************************
 *
 *   Function name : ShowClock

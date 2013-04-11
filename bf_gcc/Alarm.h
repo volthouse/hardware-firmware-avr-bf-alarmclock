@@ -42,3 +42,5 @@ char SetAlarm(char input);
 
 char ShowAlarmMode(char input);
 char SetAlarmMode(char input);
+
+char IsAlarmActiveToday(void);

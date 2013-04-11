@@ -164,7 +164,7 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
 
 const MENU_STATE menu_state[] PROGMEM = {
 //  STATE                               STATE TEXT                  STATE_FUNC
-    {ST_AVRBF,                          MT_AVRBF,                   NULL},
+    {ST_AVRBF,                          MT_AVRBF,                   ShowInfo},
     {ST_AVRBF_REV,                      NULL,                       Revision},
     {ST_TIME,                           MT_TIME,                    NULL},
     {ST_TIME_CLOCK,                     MT_TIME_CLOCK,              NULL},

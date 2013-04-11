@@ -27,7 +27,7 @@
 #define LCD_TIMER_SEED		    3
 #define LCD_FLASH_SEED          10
 #define LCD_REGISTER_COUNT      20
-#define TEXTBUFFER_SIZE         25
+#define TEXTBUFFER_SIZE         26
 
 #define SCROLLMODE_ONCE         0x01
 #define SCROLLMODE_LOOP         0x02

@@ -20,7 +20,7 @@
 #include <avr/pgmspace.h>
 //Functions
 void LCD_puts_f(const char *pFlashStr, char scrollmode);
-void LCD_puts(char *pStr, char scrollmode);
+void LCD_puts(char *pStr, char scrollmode, char update);
 void LCD_UpdateRequired(char update, char scrollmode);
 void LCD_putc(uint8_t digit, char character);
 void LCD_Clear(void);

@@ -97,7 +97,7 @@ void LCD_puts_f(const char *pFlashStr, char scrollmode)
 *	Purpose :		Writes a string to the LCD
 *
 *****************************************************************************/
-void LCD_puts(char *pStr, char scrollmode)
+void LCD_puts(char *pStr, char scrollmode, char update)
 {
     uint8_t i; // char i;
 
@@ -112,19 +112,22 @@ void LCD_puts(char *pStr, char scrollmode)
 
     gTextBuffer[i] = '\0';
 
-    if (i > 6)
+    if(!update)
     {
-        gScrollMode = 1;        // Scroll if text is longer than display size
-        gScroll = 0;
-        gLCD_Start_Scroll_Timer = 3;    //Start-up delay before scrolling the text
+        if (i > 6)
+        {
+            gScrollMode = 1;        // Scroll if text is longer than display size
+            gScroll = 0;
+            gLCD_Start_Scroll_Timer = 3;    //Start-up delay before scrolling the text
+        }
+        else
+        {
+            gScrollMode = 0;        
+            gScroll = 0;
+        }
+        gLCD_Update_Required = 1;
     }
-    else
-    {
-        gScrollMode = 0;        
-        gScroll = 0;
-    }
-
-    gLCD_Update_Required = 1;
+    
 }
 
 
