@@ -1,6 +1,5 @@
 // menu.h
 
-// mt __flash typedef struct
 typedef struct PROGMEM
 {
     unsigned char state;
@@ -9,7 +8,6 @@ typedef struct PROGMEM
 } MENU_NEXTSTATE;
 
 
-// mt __flash typedef struct
 typedef struct PROGMEM
 {
     unsigned char state;
@@ -20,9 +18,6 @@ typedef struct PROGMEM
 
 
 // Menu text
-// mtA, these where all of the same structure as in the follow. line
-// __flash char MT_AVRBF[]                         = "AVR Butterfly";
-//const char MT_AVRBF[] PROGMEM                     = "AVR Butterfly GCC";
 const char MT_AVRBF[] PROGMEM                     = 
 	{'A','V','R',' ','B','U','T','T','E','R','F','L','Y',' ','G'+0x80,'C'+0x80,'C'+0x80,'\0'};
 const char MT_TIME[] PROGMEM                      = "Time";
@@ -37,7 +32,6 @@ const char MT_TEMPERATURE[] PROGMEM               = "Temperature";
 const char MT_OPTIONS[] PROGMEM                   = "Options";
 const char MT_OPTIONS_DISPLAY[] PROGMEM           = "Display";
 const char MT_OPTIONS_DISPLAY_CONTRAST[] PROGMEM  = "Adjust contrast";
-// mt - never used: const char MT_OPTIONS_DISPLAY_SEG[] PROGMEM       = "Browse segments";
 const char MT_VCARD_DOWNLOAD_NAME[] PROGMEM       = "Download Name";
 const char MT_OPTIONS_BOOT[] PROGMEM              = "Bootloader";
 const char MT_OPTIONS_POWER_SAVE[] PROGMEM        = "Power Save Mode";
@@ -48,9 +42,7 @@ const char MT_ALARM_CLOCK[] PROGMEM               = "Time";
 const char MT_ALARM_TIME_ADJUST[] PROGMEM         = "Adjust Time";
 const char MT_ALARM_TIME_MODE[] PROGMEM           = "Mode";
 const char MT_ALARM_TIME_MODE_ADJUST[] PROGMEM    = "Adjust Mode";
-// mtE
 
-// mt MENU_NEXTSTATE menu_nextstate[] = { 
 const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
 //  STATE                       INPUT       NEXT STATE
     {ST_AVRBF,                  KEY_PLUS,   ST_OPTIONS},
@@ -118,7 +110,6 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
     {ST_ALARM_TIME_MODE_ADJUST, KEY_PREV,   ST_ALARM_TIME_MODE},
     {ST_ALARM_TIME_MODE_ADJUST, KEY_MINUS,  ST_ALARM_TIME_MODE_ADJUST},
 	
-	//{ST_ALARM_ON,      			KEY_ENTER,   ST_AVRBF},    
 //************************
 
     {ST_MUSIC,                  KEY_PLUS,   ST_ALARM_TIME},
@@ -171,7 +162,6 @@ const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
 };
 
 
-// mt MENU_STATE menu_state[] = {
 const MENU_STATE menu_state[] PROGMEM = {
 //  STATE                               STATE TEXT                  STATE_FUNC
     {ST_AVRBF,                          MT_AVRBF,                   NULL},
@@ -196,7 +186,6 @@ const MENU_STATE menu_state[] PROGMEM = {
     {ST_ALARM_TIME_ADJUST,              MT_ALARM_TIME_ADJUST,       NULL},
     {ST_ALARM_TIME_ADJUST_FUNC,         NULL,                       SetAlarm},
 	{ST_ON_ALARM,                       NULL,                       OnAlarm},
-    //{ST_ALARM_TIME_FUNC,                NULL,                       ShowAlarm},
 //*****************    
     {ST_MUSIC,                          MT_MUSIC,                   NULL},
     {ST_MUSIC_SELECT,                   NULL,                       SelectSound},

@@ -20,13 +20,9 @@
 //
 //***************************************************************************
 
-//mtA
-//#include <inavr.h>
-//#include "iom169.h"
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//mtE
 #include "main.h"
 #include "timer0.h"
 
@@ -37,7 +33,6 @@ TIMER_CALLBACK_FUNC CallbackFunc[TIMER0_NUM_CALLBACKS];
 // 1-254  The timer is counting down
 // 255    Free timer
 
-// mt char CountDownTimers[TIMER0_NUM_COUNTDOWNTIMERS];
 uint8_t CountDownTimers[TIMER0_NUM_COUNTDOWNTIMERS];
 
 /*****************************************************************************
@@ -53,7 +48,6 @@ uint8_t CountDownTimers[TIMER0_NUM_COUNTDOWNTIMERS];
 *****************************************************************************/
 void Timer0_Init(void)
 {
-    //mt char i;
     uint8_t i;
 
     // Initialize array of callback functions
@@ -91,14 +85,8 @@ void Timer0_Init(void)
 *   Purpose :       Check if any functions are to be called
 *
 *****************************************************************************/
-// mtA
-// #pragma vector = TIMER0_COMP_vect
-// __interrupt void TIMER0_COMP_interrupt(void)
-// SIGNAL(SIG_OUTPUT_COMPARE0)
 ISR(TIMER0_COMP_vect)
-// mtE
 {
-    // mt char i;
     uint8_t i;
     
     for (i=0; i<TIMER0_NUM_CALLBACKS; i++)
@@ -127,7 +115,6 @@ ISR(TIMER0_COMP_vect)
 *****************************************************************************/
 BOOL Timer0_RegisterCallbackFunction(TIMER_CALLBACK_FUNC pFunc)
 {
-    // mt char i;
     uint8_t i;
     
     for (i=0; i<TIMER0_NUM_CALLBACKS; i++)
@@ -163,7 +150,6 @@ BOOL Timer0_RegisterCallbackFunction(TIMER_CALLBACK_FUNC pFunc)
 *****************************************************************************/
 BOOL Timer0_RemoveCallbackFunction(TIMER_CALLBACK_FUNC pFunc)
 {
-    // mt char i;
     uint8_t i;
     
     for (i=0; i<TIMER0_NUM_CALLBACKS; i++)
@@ -181,7 +167,6 @@ BOOL Timer0_RemoveCallbackFunction(TIMER_CALLBACK_FUNC pFunc)
 
 char Timer0_AllocateCountdownTimer()
 {
-    // mt char i;
     uint8_t i;
 
     for (i=0; i<TIMER0_NUM_COUNTDOWNTIMERS; i++)
@@ -196,25 +181,25 @@ char Timer0_AllocateCountdownTimer()
 
 void Timer0_SetCountdownTimer(char timer, char value)
 {
-    cli(); // mt __disable_interrupt();
+    cli();
     CountDownTimers[timer-1] = value;
-    sei(); // mt __enable_interrupt();
+    sei();
 }
 
 char Timer0_GetCountdownTimer(char timer)
 {
     char t;
-    cli(); // mt __disable_interrupt();
+    cli();
     t = CountDownTimers[timer-1];
-    sei(); // mt __enable_interrupt();
+    sei();
     
     return t;
 }
 
 void Timer0_ReleaseCountdownTimer(char timer)
 {
-    cli(); // mt __disable_interrupt();
+    cli();
     CountDownTimers[timer-1] = 255;
-    sei(); // mt __enable_interrupt();
+    sei();
 }
 

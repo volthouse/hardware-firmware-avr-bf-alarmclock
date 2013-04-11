@@ -21,7 +21,6 @@ extern volatile uint8_t  gALARMMINUTE;
 extern volatile uint8_t  gALARMHOUR;
 extern volatile uint8_t	 gALARM;
 extern volatile char	 gALARM_MODE;
-//mtE
 
 #define CLOCK_24    1
 #define CLOCK_12    0
@@ -31,12 +30,15 @@ extern volatile char	 gALARM_MODE;
 #define	ALARM_MODE_6_7	2
 
 //  Function declarations
+
 void Alarm_init(void);            //initialize the Timer Counter 2 in asynchron operation
-char ShowAlarm(char input);
-char SetAlarm(char input);
+
 void CheckAlarm(void);
 char OnAlarm(char input);
 void Play_Alarm(void);
+
+char ShowAlarm(char input);
+char SetAlarm(char input);
 
 char ShowAlarmMode(char input);
 char SetAlarmMode(char input);

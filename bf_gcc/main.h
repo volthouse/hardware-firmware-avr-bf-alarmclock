@@ -1,8 +1,7 @@
 //Revisions number
 #define SWHIGH  0
-#define SWLOW   7
-// mt
-#define SWLOWLOW 6
+#define SWLOW   1
+#define SWLOWLOW 0
 
 // main.h
 
@@ -24,21 +23,14 @@ void OSCCAL_calibration(void);
 #endif
 
 #ifndef NULL
-// mt/ca:
-// #define NULL    0
 #define NULL ((void *)0)
 #endif
 
 #define AUTO    3
 
 // Macro definitions
-//mtA - 
-// sbi and cbi are not longer supported by the avr-libc
-// to avoid version-conflicts the macro-names have been 
-// changed to sbiBF/cbiBF "everywhere"
 #define sbiBF(port,bit)  (port |= (1<<bit))   //set bit in port
 #define cbiBF(port,bit)  (port &= ~(1<<bit))  //clear bit in port
-//mtE
 
 // Menu state machine states
 #define ST_AVRBF                        10

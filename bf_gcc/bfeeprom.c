@@ -38,7 +38,6 @@ void StoreEEPROM(char *pBuffer, char num_bytes, unsigned char* EE_START_ADR)
 {
     unsigned char i;
     for (i=0;i<num_bytes;i++) {
-        // mt __EEPUT(EEPROM_START_ADR++, pBuffer[i]); // Store parameters
         eeprom_write_byte(EE_START_ADR, pBuffer[i]);
         EE_START_ADR++;
     }
@@ -61,7 +60,6 @@ void LoadEEPROM(char *pBuffer, char num_bytes, unsigned char* EE_START_ADR)
 {
     unsigned char i;
     for (i=0;i<num_bytes;i++) {
-        // mt __EEGET(pBuffer[i], EEPROM_START_ADR++); // Load parameters
         pBuffer[i]=eeprom_read_byte(EE_START_ADR);
         EE_START_ADR++;
     }

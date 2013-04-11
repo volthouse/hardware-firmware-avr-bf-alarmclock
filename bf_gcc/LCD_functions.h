@@ -17,15 +17,11 @@
 //
 //*****************************************************************************
 
-// mt
 #include <avr/pgmspace.h>
 //Functions
-// mt void LCD_puts_f(char __flash *pFlashStr, char scrollmode);
-// mt jw writes : ...(char *pFlahsStr...
 void LCD_puts_f(const char *pFlashStr, char scrollmode);
 void LCD_puts(char *pStr, char scrollmode);
 void LCD_UpdateRequired(char update, char scrollmode);
-//mt void LCD_putc(char digit, char character);
 void LCD_putc(uint8_t digit, char character);
 void LCD_Clear(void);
 void LCD_Colon(char show);

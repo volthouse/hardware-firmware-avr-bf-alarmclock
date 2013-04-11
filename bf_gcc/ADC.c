@@ -19,14 +19,11 @@
 //
 //***************************************************************************
 
-//mtA
-//#include <inavr.h>
-//#include "iom169.h"
+
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include "pgmspacehlp.h"
 #include "button.h"
-//mtE
 
 #include "main.h"
 #include "ADC.h"
@@ -34,7 +31,6 @@
 #include "LCD_functions.h"
 #include "timer0.h"
 
-// mt __flash int TEMP_Celcius_pos[] =    // Positive Celcius temperatures (ADC-value)
 const int TEMP_Celsius_pos[] PROGMEM =    // Positive Celsius temperatures (ADC-value)
         {                           // from 0 to 60 degrees
             806,796,786,775,765,754,743,732,720,709,697,685,673,661,649,
@@ -44,13 +40,12 @@ const int TEMP_Celsius_pos[] PROGMEM =    // Positive Celsius temperatures (ADC-
             187,
         };
 
-// mt __flash int TEMP_Celcius_neg[] =    // Negative Celcius temperatures (ADC-value)
+
 const int TEMP_Celsius_neg[] PROGMEM =    // Negative Celsius temperatures (ADC-value)
         {                           // from -1 to -15 degrees
             815,825,834,843,851,860,868,876,883,891,898,904,911,917,923,
         };
 
-// mt __flash int TEMP_Farenheit_pos[] =  // Positive Farenheit temperatures (ADC-value)
 const int TEMP_Fahrenheit_pos[] PROGMEM =  // Positive Fahrenheit temperatures (ADC-value)
 		{                           // from 0 to 140 degrees
 			938, 935, 932, 929, 926, 923, 920, 916, 913, 909, 906, 902, 898, 
@@ -108,13 +103,13 @@ int ADC_read(void)
 {
     char i;
     int ADC_temp;
-    // mt int ADC = 0 ;
+
     int ADCr = 0;
     
     // To save power, the voltage over the LDR and the NTC is turned off when not used
     // This is done by controlling the voltage from a I/O-pin (PORTF3)
-    sbiBF(PORTF, PF3); // mt sbi(PORTF, PORTF3);     // Enable the VCP (VC-peripheral)
-    sbiBF(DDRF, DDF3); // sbi(DDRF, PORTF3);        
+    sbiBF(PORTF, PF3); // Enable the VCP (VC-peripheral)
+    sbiBF(DDRF, DDF3);   
 
     sbiBF(ADCSRA, ADEN);     // Enable the ADC
 
@@ -135,8 +130,8 @@ int ADC_read(void)
 
     ADCr = ADCr >> 3;     // average the 8 samples
         
-    cbiBF(PORTF,PF3); // mt cbi(PORTF, PORTF3);     // disable the VCP
-    cbiBF(DDRF,DDF3); // mt cbi(DDRF, PORTF3);  
+    cbiBF(PORTF,PF3); // disable the VCP
+    cbiBF(DDRF,DDF3); 
     
     cbiBF(ADCSRA, ADEN);      // disable the ADC
 
@@ -175,7 +170,6 @@ void ADC_periphery(void)
             {    
                 for (i=0; i<=25; i++)   // Find the temperature
                 {
-                    // mt if (ADCresult <= TEMP_Celcius_neg[i])
                     if (ADCresult <= (int)pgm_read_word(&TEMP_Celsius_neg[i]))
                     {
                         break;
@@ -188,7 +182,6 @@ void ADC_periphery(void)
             {
                 for (i=0; i<100; i++)  
                 {
-                    // mt if (ADCresult >= TEMP_Celcius_pos[i])
                     if (ADCresult >= (int)pgm_read_word(&TEMP_Celsius_pos[i]))
                     {
                         break;
@@ -209,7 +202,6 @@ void ADC_periphery(void)
             TH = (Temp >> 4) + '0';     // Find the high-byte
             
             LCD_putc(0, ' ');
-            //LCD character 1 is allready written to
             LCD_putc(2, TH);
             LCD_putc(3, TL);
             LCD_putc(4, '*');
@@ -220,7 +212,6 @@ void ADC_periphery(void)
         {
             for (i=0; i<=141; i++)   // Find the temperature
             {
-                // mt if (ADCresult > TEMP_Farenheit_pos[i])
                 if (ADCresult > (int)pgm_read_word(&TEMP_Fahrenheit_pos[i]))
                 {
                     break;

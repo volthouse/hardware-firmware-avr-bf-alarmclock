@@ -39,9 +39,6 @@
 // "// mtE" but forgot this for some changes esp. during debugging. 'diff' 
 // against the original code to see everything that has been changed.
 
-//mtA
-//#include <inavr.h>
-//#include "iom169.h"
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -54,7 +51,6 @@
 #warning "avr-libc >= version 1.4.5 recommended"
 #warning "This code has not been tested with older versions."
 #endif
-//mtE
 
 #include "main.h"
 #include "LCD_functions.h"
@@ -68,9 +64,6 @@
 #include "sound.h"
 #include "ADC.h"
 #include "dataflash.h"
-// mt #include "eeprom.h"
-// mt Test() is not realy needed 
-//- can not be accessed without external hardware
 #include "test.h"
 #include "vcard.h"
 #include "menu.h"
@@ -97,22 +90,18 @@ unsigned char state;  // holds the current state, according to "menu.h"
 *   Purpose :       Contains the main loop of the program
 *
 *****************************************************************************/
-// mt __C_task void main(void)
 __attribute__ ((OS_main)) int main(void)
 {    
-//  unsigned char state, nextstate;
     unsigned char nextstate;
-    // mt static char __flash *statetext;
     PGM_P statetext;
     char (*pStateFunc)(char);
     char input;
-    uint8_t i, j; // char i;
+    uint8_t i, j;
     char buttons;
     char last_buttons;
 
     last_buttons='\0';  // mt
 
-    // Initial state variables
     state = ST_AVRBF;
     nextstate = ST_AVRBF;
     statetext = MT_AVRBF;
@@ -121,9 +110,7 @@ __attribute__ ((OS_main)) int main(void)
 
     // Program initalization
     Initialization();
-    sei(); // mt __enable_interrupt();
-
-//Test();
+    sei();
 
     for (;;)            // Main loop
     {
@@ -153,22 +140,12 @@ __attribute__ ((OS_main)) int main(void)
             if (nextstate != state)
             {
                 state = nextstate;
-                // mt: for (i=0; menu_state[i].state; i++)
                 for (i=0; (j=pgm_read_byte(&menu_state[i].state)); i++)
                 {
-                    //mt: if (menu_state[i].state == state)
-                    //mt 1/06 if (pgm_read_byte(&menu_state[i].state) == state)
                     if (j == state)
                     {
-                        // mtA
-                        // mt - original: statetext =  menu_state[i].pText;
-                        // mt - original: pStateFunc = menu_state[i].pFunc;
-                        /// mt this is like the example from an avr-gcc guru (mailing-list):
                         statetext =  (PGM_P) pgm_read_word(&menu_state[i].pText);
-                        // mt - store pointer to function from menu_state[i].pFunc in pStateFunc
-                        //// pStateFunc = pmttemp;	// oh je - wie soll ich das jemals debuggen - ?
                         pStateFunc = (PGM_VOID_P) pgm_read_word(&menu_state[i].pFunc);
-                        // mtE
                         break;
                     }
                 }
@@ -190,12 +167,9 @@ __attribute__ ((OS_main)) int main(void)
         
         // If the joystick is held in the UP and DOWN position at the same time,
         // activate test-mode
-        // mtA
-        // if( !(PINB & (1<<PORTB7)) && !(PINB & (1<<PORTB6)) )    
         if( !(PINB & (1<<PINB7)) && !(PINB & (1<<PINB6)) ) {
             Test();
         }
-        // mtE
         
         // Check if the joystick has been in the same position for some time, 
         // then activate auto press of the joystick
@@ -226,14 +200,8 @@ __attribute__ ((OS_main)) int main(void)
             if(PowerSave)
                 cbiBF(LCDCRA, 7);             // disable LCD
 
-            // mtA
-            // "Manual" Power-Save sleep - replaced by avr-libc functions
-            // SMCR = (3<<SM0) | (1<<SE);   // Enable Power-save mode
-            // asm volatile ("sleep"::);    // __sleep();  // Go to sleep
-            // mt 20070131 - avr-libc 1.4.x supports ATmega169 sleep
             set_sleep_mode(SLEEP_MODE_PWR_SAVE);
             sleep_mode();
-            // mtE
 
             if(PowerSave)
             {
@@ -253,14 +221,8 @@ __attribute__ ((OS_main)) int main(void)
         }
         else
         {
-           // mtA
-           // "Manual" Power-Save sleep - replaced by avr-libc functions
-           // SMCR = (1<<SE);            // Enable idle mode
-           // asm volatile ("sleep"::);  // __sleep();  // Go to sleep
-           // mt 20070131 - avr-libc 1.4.x supports ATmega169 sleep
            set_sleep_mode(SLEEP_MODE_IDLE);
            sleep_mode();
-           // mtE
         }
 		
 		if(gALARM)
@@ -285,16 +247,8 @@ __attribute__ ((OS_main)) int main(void)
             }
 		}
 		
-        // mtA
-        // SMCR-reset is not needed since (from avr-libc Manual): 
-        // This [the sleep_mode] macro automatically takes care to 
-        // enable the sleep mode in the CPU before going to sleep, 
-        // and disable it again afterwards
-        // SMCR = 0;                       // Just woke, disable sleep
-
-    } //End Main loop
-
-    return 0; // mt
+    }
+    return 0;
 }
 
 
@@ -316,16 +270,11 @@ unsigned char StateMachine(char state, unsigned char stimuli)
     unsigned char nextstate = state;    // Default stay in same state
     unsigned char i, j;
 
-    // mt: for (i=0; menu_nextstate[i].state; i++)
     for (i=0; ( j=pgm_read_byte(&menu_nextstate[i].state) ); i++ )
     {
-        // mt: if (menu_nextstate[i].state == state && menu_nextstate[i].input == stimuli)
-        // mt 1/06 : if (pgm_read_byte(&menu_nextstate[i].state) == state && 
         if ( j == state && 
              pgm_read_byte(&menu_nextstate[i].input) == stimuli)
         {
-            // This is the one!
-            // mt: nextstate = menu_nextstate[i].nextstate;
             nextstate = pgm_read_byte(&menu_nextstate[i].nextstate);
             break;
         }
@@ -365,9 +314,7 @@ void Initialization(void)
     // Disable Digital input on PF0-2 (power save)
     DIDR0 = (7<<ADC0D);
 
-    // mt PORTB = (15<<PORTB0);       // Enable pullup on 
     PORTB = (15<<PB0);       // Enable pullup on 
-    // mt PORTE = (15<<PORTE4);
     PORTE = (15<<PE4);
 
     sbiBF(DDRB, 5);               // set OC1A as output
@@ -408,8 +355,6 @@ void Initialization(void)
 *                   Bootloader-section. (the BOOTRST-fuse must be programmed)
 *
 *****************************************************************************/
-// mt __flash char TEXT_BOOT[]                     
-// mt - as in jw-patch: const char TEXT_BOOT[] PROGMEM	= "Jump to bootloader";
 
 char BootFunc(char input)
 {
@@ -418,7 +363,6 @@ char BootFunc(char input)
     if(enter)
     {
         enter = 0;
-        // mt jw LCD_puts_f(TEXT_BOOT, 1);
         LCD_puts_f(PSTR("Jump to bootloader"), 1);
     }
     else if(input == KEY_ENTER)
@@ -451,8 +395,6 @@ char BootFunc(char input)
 *   Purpose :       Enable power save
 *
 *****************************************************************************/
-// mt __flash char TEXT_POWER[]                     = "Press enter to sleep";
-// mt jw const char TEXT_POWER[]  PROGMEM  = "Press enter to sleep";
 
 char PowerSaveFunc(char input)
 {
@@ -461,7 +403,6 @@ char PowerSaveFunc(char input)
     if(enter)
     {
         enter = 0;
-        //mt jw LCD_puts_f(TEXT_POWER, 1);
         LCD_puts_f(PSTR("Press enter to sleep"), 1);
     }
     else if(input == KEY_ENTER)
@@ -525,7 +466,7 @@ char AutoPower(char input)
         if(AutoPowerSave)  
             AutoPowerShowMin();
         else
-            LCD_puts_f(PSTR("Off"),1);	// mt LCD_puts("Off", 1);        
+            LCD_puts_f(PSTR("Off"),1);     
     }
     else if(input == KEY_ENTER)
     {
@@ -557,7 +498,7 @@ char AutoPower(char input)
         {
             AutoPowerSave = FALSE;
             PowerSaveTimeout = 0;
-            LCD_puts_f(PSTR("Off"),1);	// mt LCD_puts("Off", 1);
+            LCD_puts_f(PSTR("Off"),1);
         }
         else
         {   
@@ -634,7 +575,6 @@ char KeyClick(char input)
 *****************************************************************************/
 void Delay(unsigned int millisec)
 {
-	// mt, int i did not work in the simulator:  int i; 
 	uint8_t i;
 
 	while (millisec--) {
@@ -668,13 +608,10 @@ char Revision(char input)
         LCD_putc(0, 'R');
         LCD_putc(1, 'E');
         LCD_putc(2, 'V');
-        // mtA 
-        // LCD_putc(3, ' ');
-        LCD_putc(3, (SWHIGH + 0x30)); // LCD_putc(4, (SWHIGH + 0x30));       //SWHIGH/LOW are defined in "main.h"
-        LCD_putc(4, (SWLOW + 0x30)); // LCD_putc(5, (SWLOW + 0x30));
-        LCD_putc(5, (SWLOWLOW + 0x30)); // LCD_putc(5, (SWLOW + 0x30));
+        LCD_putc(3, (SWHIGH + 0x30));
+        LCD_putc(4, (SWLOW + 0x30));
+        LCD_putc(5, (SWLOWLOW + 0x30));
         LCD_putc(6, '\0');
-        // mtE
         
         LCD_UpdateRequired(TRUE, 0);          
     }
@@ -729,7 +666,7 @@ void OSCCAL_calibration(void)
     
     while(!calibrate)
     {
-        cli(); // mt __disable_interrupt();  // disable global interrupt
+        cli(); // disable global interrupt
         
         TIFR1 = 0xFF;   // delete TIFR1 flags
         TIFR2 = 0xFF;   // delete TIFR2 flags
@@ -738,14 +675,12 @@ void OSCCAL_calibration(void)
         TCNT1L = 0;
         TCNT2 = 0;      // clear timer2 counter
            
-        // shc/mt while ( !(TIFR2 && (1<<OCF2A)) );   // wait for timer2 compareflag    
         while ( !(TIFR2 & (1<<OCF2A)) );   // wait for timer2 compareflag
 
         TCCR1B = 0; // stop timer1
 
-        sei(); // __enable_interrupt();  // enable global interrupt
+        sei(); // enable global interrupt
     
-        // shc/mt if ( (TIFR1 && (1<<TOV1)) )
         if ( (TIFR1 & (1<<TOV1)) )
         {
             temp = 0xFFFF;      // if timer1 overflows, set the temp to 0xFFFF
@@ -773,7 +708,6 @@ void OSCCAL_calibration(void)
     }
 }
 
-// mtA
 #if 0
 /*****************************************************************************
 *

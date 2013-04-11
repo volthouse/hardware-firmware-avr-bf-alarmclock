@@ -46,10 +46,8 @@
 *
 ******************************************************************************/
 
-// mt __flash char TEXT_SONG1[]       = "Fur Elise";
 const char TEXT_SONG1[] PROGMEM      = "Fur Elise";
 
-// __flash int FurElise[] =   
 const int FurElise[] PROGMEM=   
         {
             3, 
@@ -61,10 +59,8 @@ const int FurElise[] PROGMEM=
         };
 
 
-//__flash char TEXT_SONG2[]       = "Turkey march";
 const char TEXT_SONG2[] PROGMEM  = "Turkey march";
 
-//__flash int Mozart[] = 
 const int Mozart[] PROGMEM = 
         {
             3, 
@@ -76,8 +72,6 @@ const int Mozart[] PROGMEM =
             0, 1
         };
 
-// mt song 3 & 4 where commented out by ATMEL - see their readme
-// well, the gcc-geek wants all the songs ;-)
 const char TEXT_SONG3[] PROGMEM      = "Minuet";
 
 const int Minuet[] PROGMEM = 
@@ -103,10 +97,8 @@ int AuldLangSyne[] PROGMEM =
         };
 
 
-//__flash char TEXT_SONG5[]      =   "Sirene1";
 const char TEXT_SONG5[] PROGMEM =   "Sirene1";
 
-//__flash int Sirene1[] = 
 const int Sirene1[] PROGMEM = 
         {
             0,
@@ -122,10 +114,8 @@ const int Sirene1[] PROGMEM =
             0, 1
         };
 
-//__flash char TEXT_SONG6[]      =   "Sirene2";
 const char TEXT_SONG6[] PROGMEM =   "Sirene2";
 
-//__flash int Sirene2[] = 
 const int Sirene2[] PROGMEM = 
         {
             3, 
@@ -134,10 +124,8 @@ const int Sirene2[] PROGMEM =
         };
 
 
-//__flash char TEXT_SONG7[]      =   "Whistle";
 const char TEXT_SONG7[] PROGMEM      =   "Whistle";
 
-//__flash int Whistle[] = 
 const int Whistle[] PROGMEM = 
         {
             0, 
@@ -165,17 +153,12 @@ const int Exorcist[] PROGMEM =
         };
 
 // pointer-array with pointers to the song arrays
-// mt: __flash int __flash *Songs[]    = { FurElise, Mozart, /*Minuet, AuldLangSyne,*/ Sirene1, Sirene2, Whistle, 0};
 const int *Songs[] PROGMEM   = { FurElise, Mozart, Minuet, AuldLangSyne, Sirene1, Sirene2, Whistle, Exorcist, 0 };
 
-//mt: __flash char __flash *TEXT_SONG_TBL[]    = { TEXT_SONG1, TEXT_SONG2, /*TEXT_SONG3, TEXT_SONG4,*/TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, 0};
 PGM_P TEXT_SONG_TBL[] PROGMEM   = { TEXT_SONG1, TEXT_SONG2, TEXT_SONG3, TEXT_SONG4, TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, TEXT_SONG8, 0 };
-// const char *TEXT_SONG_TBL[]    = { TEXT_SONG1, TEXT_SONG2, TEXT_SONG3, TEXT_SONG4, TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, 0};
 
-//__flash char PLAYING[]          = "PLAYING";
 const char PLAYING[] PROGMEM   = "PLAYING";
 
-// mt: int __flash *pSong;     // pointer to the different songs in flash
 const int *pSong;	// mt - pointer to the different songs in flash
 
 volatile char gPlaying = FALSE;
@@ -221,7 +204,6 @@ void Sound_Init(void)
 *   Purpose :       Select song/tune
 *
 *****************************************************************************/
-// mt inserted local helper to save some flash-space
 static void showSongName(unsigned char songnum)
 {
     LCD_puts_f((PGM_P)pgm_read_word(&TEXT_SONG_TBL[songnum]), 1);  // mt   // Set up the a song in the LCD
@@ -230,7 +212,6 @@ static void showSongName(unsigned char songnum)
 char SelectSound(char input)
 {
     static char enter = 1;
-    // mt static char song = 0;
     static uint8_t song = 0;
     
     
@@ -238,10 +219,8 @@ char SelectSound(char input)
     {
         enter = 0;
         
-        // mt LCD_puts_f((PGM_P)pgm_read_word(&TEXT_SONG_TBL[song]), 1);  // mt   // Set up the a song in the LCD
         showSongName(song);
 
-        // mt pSong = Songs[song];            // point to this song             
         pSong=(int*)pgm_read_word(&Songs[song]); // looks too complicated...
 
     }      
@@ -257,10 +236,8 @@ char SelectSound(char input)
         else
             song--;
 
-        // mt LCD_puts_f((PGM_P)pgm_read_word(&TEXT_SONG_TBL[song]), 1); // mt
         showSongName(song);
         
-        // mt pSong = Songs[song];
         pSong=(int*)pgm_read_word(&Songs[song]); 
 
     }    
@@ -271,10 +248,8 @@ char SelectSound(char input)
         if( !(pgm_read_word(&TEXT_SONG_TBL[song])) )       // wrap around the table
             song = 0;
         
-        // mt LCD_puts_f((PGM_P)pgm_read_word(&TEXT_SONG_TBL[song]), 1);
         showSongName(song);
         
-        // mt pSong = Songs[song];
         pSong=(int*)pgm_read_word(&Songs[song]);
     }  
     else if(input == KEY_ENTER)     // start playing
@@ -394,7 +369,7 @@ char Sound(char input)
 *****************************************************************************/
 void Play_Tune(void)
 {
-    unsigned int temp_tone;	// mt 200301
+    unsigned int temp_tone;
     int temp_hi;
     
     char loop;
@@ -402,7 +377,6 @@ void Play_Tune(void)
     if(!Tone)
     {
         Duration = 0;   
-        // mt Tempo = *(pSong + 0);
         Tempo = (uint8_t)pgm_read_word(pSong + 0);
         Tone = 1;   //Start the song from the beginning
     }
@@ -413,26 +387,20 @@ void Play_Tune(void)
         {   
             Duration--;
         }
-        // mt: else if(*(pSong + Tone))    // If not the end of the song
         else if(pgm_read_word(pSong + Tone))  // If not the end of the song
         {
-            // mt: Duration = ( DURATION_SEED / *(pSong + Tone) );  // store the duration
             Duration = ( DURATION_SEED / pgm_read_word(pSong + Tone) );  // store the duration
         
             Tone++;                     // point to the next tone in the Song-table        
 
-            temp_tone=pgm_read_word(pSong + Tone); // mt 200301
-            // mt: if( (*(pSong + Tone) == p) | (*(pSong + Tone) == P) ) // if pause
-            // if( (pgm_read_word(pSong + Tone) == p) | (pgm_read_word(pSong + Tone) == P) ) // if pause
+            temp_tone=pgm_read_word(pSong + Tone); 
             if( (temp_tone == p) || (temp_tone == P) ) // if pause
                 cbiBF(TCCR1B, CS10);             // stop Timer1, prescaler(1)    
             else 
                 sbiBF(TCCR1B, CS10);             // start Timer1, prescaler(1)  
                 
-            cli(); // mt __disable_interrupt();
+            cli();
             
-            // mt temp_hi = *(pSong + Tone);      // read out the PWM-value
-            // temp_hi = pgm_read_word(pSong + Tone);      // read out the PWM-value
             temp_hi = temp_tone;   // mt 200301
             temp_hi >>= 8;                  // move integer 8 bits to the rigth
                 
@@ -440,11 +408,9 @@ void Play_Tune(void)
             TCNT1L = 0;
             
             ICR1H = temp_hi;                // load ICR1H/L
-            // mt: ICR1L = *(pSong + Tone);        
-            // ICR1L = pgm_read_word(pSong + Tone);
             ICR1L = temp_tone;
             
-            sei(); // mt: __enable_interrupt();
+            sei();
             
             Tone++;                     // point to the next tone in the Song-table
         }
@@ -452,7 +418,6 @@ void Play_Tune(void)
         {
             Tone++;         // point to the next tone in the Song-table        
             
-            // mt: loop = *(pSong + Tone); // get the byte that tells if the song should loop or not
             loop = (uint8_t)pgm_read_word(pSong + Tone); // get the byte that tells if the song should loop or not
             
             if( loop )  
@@ -471,7 +436,6 @@ void Play_Tune(void)
             }
         }
         
-        // mt: Tempo = *(pSong + 0);
         Tempo = (uint8_t)pgm_read_word(pSong + 0);
     }
     else
@@ -479,7 +443,6 @@ void Play_Tune(void)
  
 }    
 
-//mtA
 /*****************************************************************************
 *
 *   Function name : PlayClick
@@ -501,7 +464,6 @@ void PlayClick(void)
 		Delay(1);
 	}
 }
-//mtE
 
 void PlayAlarm(void)
 {
@@ -509,9 +471,7 @@ void PlayAlarm(void)
 	Duration = 0;                       // start Playing
 	Tone = 1;
 	Sound_Init();
-	//LCD_puts_f(PLAYING, 1);            
 	gPlaying = TRUE;
-	//Timer0_RegisterCallbackFunction(Play_Tune);
 }
 
 void StopPlayAlarm(void)

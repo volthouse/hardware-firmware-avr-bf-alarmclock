@@ -20,35 +20,23 @@
 //
 //***************************************************************************
 
-//mtA
-//#include <inavr.h>
-//#include "iom169.h"
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//mtE
 #include "main.h"
 #include "button.h"
 #include "timer0.h"
 // for keyclick:
 #include "sound.h"
 
-// mt/v6 - keyclick (see main.c)
 extern volatile BOOL gKeyClickStatus;
 
-// extern char gPowerSaveTimer;
 extern volatile uint8_t gPowerSaveTimer;
 
-// mt  unsigned char gButtonTimeout = FALSE;
 volatile unsigned char gButtonTimeout = FALSE;
 
-//mtA
-//char KEY = NULL;
-//char KEY_VALID = FALSE;
-//volatile char KEY = NULL;
 volatile char KEY = 0;
 volatile char KEY_VALID = FALSE;
-//mtE
 
 char CountdownTimerHandle;
 
@@ -82,18 +70,11 @@ void Button_Init(void)
     CountdownTimerHandle = Timer0_AllocateCountdownTimer();
 }
 
-// #pragma vector = PCINT0_vect
-// __interrupt void PCINT0_interrupt(void)
 ISR(PCINT0_vect)
-// mtE
 {
     PinChangeInterrupt();
 }
 
-// mtA
-// #pragma vector = PCINT1_vect
-// __interrupt void PCINT1_interrupt(void)
-// mtE
 ISR(PCINT1_vect)
 {
     PinChangeInterrupt();
@@ -187,7 +168,7 @@ char getkey(void)
 {
     char k;
 
-    cli(); // mt: __disable_interrupt();
+    cli();
 
     if (KEY_VALID)              // Check for unread key in buffer
     {
@@ -197,7 +178,7 @@ char getkey(void)
     else
         k = KEY_NULL;           // No key stroke available
 
-    sei(); // mt: __enable_interrupt();
+    sei(); 
 
     return k;
 }

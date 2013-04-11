@@ -3,7 +3,7 @@ char SelectSound(char);
 char Sound(char);
 void Play_Tune(void);
 
-void PlayClick(void); // mt
+void PlayClick(void);
 
 void PlayAlarm(void);
 void StopPlayAlarm(void);

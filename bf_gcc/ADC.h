@@ -1,6 +1,4 @@
 #define TEMPERATURE_SENSOR  0
-//#define CELCIUS             3
-//#define FARENHEIT           4
 #define CELSIUS             3
 #define FAHRENHEIT           4
 

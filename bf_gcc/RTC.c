@@ -20,25 +20,17 @@
 //  20070129          SIGNAL->ISR                                   - mt
 //*****************************************************************************
 
-//mtA
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include "button.h"
-//mtE
 #include "main.h"
 #include "RTC.h"
 #include "LCD_functions.h"
 #include "BCD.h"
 #include "Alarm.h"
 
-// mtA
-//char gSECOND;
-//char gMINUTE;
-//char gHOUR;
-//char gDAY;
-//char gMONTH;
 volatile uint8_t  gSECOND;
 volatile uint8_t  gMINUTE;
 volatile uint8_t  gHOUR;
@@ -46,14 +38,11 @@ volatile uint8_t  gDAY;
 volatile uint8_t  gMONTH;
 volatile uint16_t gYEAR;
 
-//char gPowerSaveTimer = 0;
-//char dateformat = 0;
 volatile uint8_t gPowerSaveTimer = 0;
 uint8_t dateformat = 0;
-// mtE
 
 // Lookup table holding the length of each mont. The first element is a dummy.
-// mt this could be placed in progmem too, but the arrays are accessed quite
+// This could be placed in progmem too, but the arrays are accessed quite
 //    often - so leaving them in RAM is better...
 char MonthLength[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -63,32 +52,18 @@ char TBL_CLOCK_12[] =   // table used when displaying 12H clock
 char clockformat = CLOCK_24;    // set initial clock format to 24H
 
 // different date formates (text only)
-// mtA
-//__flash char EUROPEAN_DATE_TEXT[] =   "DDMMYY";
-//__flash char AMERICAN_DATE_TEXT[] =   "MMDDYY";
-//__flash char CANADIAN_DATE_TEXT[] =   "YYMMDD"; 
 const char EUROPEAN_DATE_TEXT[] PROGMEM =   "DDMMYY";
 const char AMERICAN_DATE_TEXT[] PROGMEM =   "MMDDYY";
 const char CANADIAN_DATE_TEXT[] PROGMEM =   "YYMMDD"; 
-// mtE
 
 // different date formates, table for putting DD, MM and YY at the right place
 // on the LCD
-//mtA
-//__flash char EUROPEAN_DATE_NR[] =   { 4, 5, 2, 3, 0, 1 };
-//__flash char AMERICAN_DATE_NR[] =   { 4, 5, 0, 1, 2, 3 };
-//__flash char CANADIAN_DATE_NR[] =   { 0, 1, 2, 3, 4, 5 }; 
 const uint8_t EUROPEAN_DATE_NR[] PROGMEM =   { 4, 5, 2, 3, 0, 1 };
 const uint8_t AMERICAN_DATE_NR[] PROGMEM =   { 4, 5, 0, 1, 2, 3 };
 const uint8_t CANADIAN_DATE_NR[] PROGMEM =   { 0, 1, 2, 3, 4, 5 }; 
-//mtE
 
-//mtA
-//__flash char __flash *DATEFORMAT_TEXT[] = {EUROPEAN_DATE_TEXT, AMERICAN_DATE_TEXT, CANADIAN_DATE_TEXT};
-//__flash char __flash *DATE_FORMAT_NR[] = {EUROPEAN_DATE_NR, AMERICAN_DATE_NR, CANADIAN_DATE_NR};
 PGM_P DATEFORMAT_TEXT[] = {EUROPEAN_DATE_TEXT, AMERICAN_DATE_TEXT, CANADIAN_DATE_TEXT};
 const uint8_t *DATE_FORMAT_NR[] PROGMEM = {EUROPEAN_DATE_NR, AMERICAN_DATE_NR, CANADIAN_DATE_NR};
-//mtE
 
 
 
@@ -109,11 +84,11 @@ void RTC_init(void)
 {
     Delay(1000);            // wait for 1 sec to let the Xtal stabilize after a power-on,
 
-    cli(); // mt __disable_interrupt();  // disabel global interrupt
+    cli();   				// disabel global interrupt
+ 
+    cbiBF(TIMSK2, TOIE2);  	// disable OCIE2A and TOIE2
 
-    cbiBF(TIMSK2, TOIE2);             // disable OCIE2A and TOIE2
-
-    ASSR = (1<<AS2);        // select asynchronous operation of Timer2
+    ASSR = (1<<AS2);      	// select asynchronous operation of Timer2
 
     TCNT2 = 0;              // clear TCNT2A
     TCCR2A |= (1<<CS22) | (1<<CS20);             // select precaler: 32.768 kHz / 128 = 1 sec between each overflow
@@ -123,16 +98,15 @@ void RTC_init(void)
     TIFR2 = 0xFF;           // clear interrupt-flags
     sbiBF(TIMSK2, TOIE2);     // enable Timer2 overflow interrupt
 
-    sei(); // mt __enable_interrupt();                 // enable global interrupt
+    sei(); // enable global interrupt
 
     // initial time and date setting
-    gSECOND  = 50;
+    gSECOND  = 0;
     gMINUTE  = 0;
     gHOUR    = 12;
-    // mt release timestamp
-    gDAY     = 12;
-    gMONTH   = 3;
-    gYEAR    = 9;
+    gDAY     = 11;
+    gMONTH   = 11;
+    gYEAR    = 11;
 }
 
 
@@ -149,7 +123,6 @@ void RTC_init(void)
 *****************************************************************************/
 char ShowClock(char input)
 {
-    //char HH, HL, MH, ML, SH, SL;
     uint8_t HH, HL, MH, ML, SH, SL;
 
     if (clockformat == CLOCK_12)    // if 12H clock
@@ -207,14 +180,9 @@ char ShowClock(char input)
 char SetClock(char input)
 {
     static char enter_function = 1;
-    // mtA
-    // static char time[3];    // table holding the temporary clock setting
-    // static char mode = HOUR;
-    // char HH, HL, MH, ML, SH, SL;
     static uint8_t time[3];
     static uint8_t mode = HOUR;
     uint8_t HH, HL, MH, ML, SH, SL;
-    // mtE
 
     if (enter_function)
     {
@@ -278,11 +246,11 @@ char SetClock(char input)
     else if (input == KEY_ENTER)
     {
         // store the temporary adjusted values to the global variables
-        cli(); // mt __disable_interrupt();
+        cli();
         gHOUR = time[HOUR];
         gMINUTE = time[MINUTE];
         gSECOND = time[SECOND];
-        sei(); // mt __enable_interrupt();
+        sei();
         mode = HOUR;
         return ST_TIME_CLOCK_FUNC;
     }
@@ -330,9 +298,9 @@ char SetClockFormat(char input)
         enter = 0;
         
         if(clockformat == CLOCK_24)
-            LCD_puts_f(PSTR("24H"), 1);	 // mt LCD_puts("24H", 1);            
+            LCD_puts_f(PSTR("24H"), 1);       
         else
-            LCD_puts_f(PSTR("12H"), 1);	// mt LCD_puts("12H", 1);		
+            LCD_puts_f(PSTR("12H"), 1);
 
     }
     if (input == KEY_PLUS)
@@ -340,12 +308,12 @@ char SetClockFormat(char input)
         if(clockformat == CLOCK_24)
         {
             clockformat = CLOCK_12;
-            LCD_puts_f(PSTR("12H"), 1); // mt LCD_puts("12H", 1);
+            LCD_puts_f(PSTR("12H"), 1);
         }
         else
         {
             clockformat = CLOCK_24;
-            LCD_puts_f(PSTR("24H"), 1); // mt LCD_puts("24H", 1);            
+            LCD_puts_f(PSTR("24H"), 1);
         }
     }
     else if (input == KEY_MINUS)
@@ -353,12 +321,12 @@ char SetClockFormat(char input)
         if(clockformat == CLOCK_12)
         {
             clockformat = CLOCK_24;
-            LCD_puts_f(PSTR("24H"), 1);	// mt LCD_puts("24H", 1);
+            LCD_puts_f(PSTR("24H"), 1);
         }
         else
         {
             clockformat = CLOCK_12;
-            LCD_puts_f(PSTR("12H"), 1);   // mt LCD_puts("12H", 1);            
+            LCD_puts_f(PSTR("12H"), 1);
         }
     }
     else if (input == KEY_ENTER)    
@@ -399,15 +367,6 @@ char ShowDate(char input)
     DL = (DH & 0x0F) + '0';
     DH = (DH >> 4) + '0';
 
-    // mtA
-	/*
-    LCD_putc( *(DATE_FORMAT_NR[dateformat] + 0), YH);
-    LCD_putc( *(DATE_FORMAT_NR[dateformat] + 1), YL);
-    LCD_putc( *(DATE_FORMAT_NR[dateformat] + 2), MH);
-    LCD_putc( *(DATE_FORMAT_NR[dateformat] + 3), ML);
-    LCD_putc( *(DATE_FORMAT_NR[dateformat] + 4), DH);
-    LCD_putc( *(DATE_FORMAT_NR[dateformat] + 5), DL);
-	*/
    	uint8_t *pDateFormatNr = (uint8_t*)pgm_read_word(&DATE_FORMAT_NR[dateformat]);
     LCD_putc( pgm_read_byte(pDateFormatNr++), YH);
     LCD_putc( pgm_read_byte(pDateFormatNr++), YL);
@@ -415,7 +374,6 @@ char ShowDate(char input)
     LCD_putc( pgm_read_byte(pDateFormatNr++), ML);
 	LCD_putc( pgm_read_byte(pDateFormatNr++), DH);
     LCD_putc( pgm_read_byte(pDateFormatNr), DL);
-    // mtE
 
     LCD_putc(6, '\0');
 
@@ -451,18 +409,11 @@ char ShowDate(char input)
 char SetDate(char input)
 {
 	static char enter_function = 1;
-	// mtA
-	// static char date[3];    // table holding the temporary date setting
-	// static char mode = DAY;
-	// char YH, YL, MH, ML, DH, DL;
-	// char MonthLength_temp;
-	// char LeapMonth;
 	static uint8_t date[3];    // table holding the temporary date setting
 	static uint8_t mode = DAY;
 	uint8_t YH, YL, MH, ML, DH, DL;
 	uint8_t MonthLength_temp;
 	uint8_t LeapMonth;
-	// mtE
 
     if (enter_function)
     {
@@ -545,11 +496,11 @@ char SetDate(char input)
     else if (input == KEY_ENTER)
     {
         // store the temporary adjusted values to the global variables
-        cli(); // mt __disable_interrupt();
+        cli();
         gYEAR = date[YEAR];
         gMONTH = date[MONTH];
         gDAY = date[DAY];
-        sei(); // mt __enable_interrupt();
+        sei();
         mode = YEAR;
         return ST_TIME_DATE_FUNC;
     }
@@ -567,7 +518,7 @@ char SetDate(char input)
 
     // Check for leap year, if month == February
     if (gMONTH == 2)
-        if (!(gYEAR & 0x0003))              // if (gYEAR%4 == 0)
+        if (!(gYEAR & 0x0003))
             if (gYEAR%100 == 0)
                 if (gYEAR%400 == 0)
                     LeapMonth = 1;
@@ -653,12 +604,7 @@ char SetDateFormat(char input)
 *            The interrupt occurs once a second (running from the 32kHz crystal)
 *
 *******************************************************************************/
-// mtA
-// #pragma vector = TIMER2_OVF_vect
-// __interrupt void TIMER2_OVF_interrupt(void)
-// SIGNAL(SIG_OVERFLOW2)
 ISR(TIMER2_OVF_vect)
-// mtE
 {
     static char LeapMonth;
 

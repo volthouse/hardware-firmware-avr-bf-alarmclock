@@ -29,7 +29,6 @@
 #include "LCD_driver.h"
 #include "LCD_functions.h"
 #include "BCD.h"
-// mt only for KEY_* and ST_OPTIONS_DISPLAY* definitions:
 #include "main.h"
 #include "button.h"
 
@@ -37,7 +36,6 @@
 #define FALSE   0
 #define TRUE    (!FALSE)
 
-// mt char CONTRAST = LCD_INITIAL_CONTRAST;
 uint8_t CONTRAST = LCD_INITIAL_CONTRAST;
 
 // Start-up delay before scrolling a string over the LCD. "LCD_driver.c"
@@ -56,7 +54,6 @@ extern volatile char gLCD_Start_Scroll_Timer;
 *
 *****************************************************************************/
 
-// mt void LCD_puts_f(char __flash *pFlashStr, char scrollmode)
 void LCD_puts_f(const char *pFlashStr, char scrollmode)
 {
     uint8_t i;
@@ -65,10 +62,8 @@ void LCD_puts_f(const char *pFlashStr, char scrollmode)
 
     while (gLCD_Update_Required);      // Wait for access to buffer
 
-    // mt: for (i = 0; pFlashStr[i] && i < TEXTBUFFER_SIZE; i++)
     for (i = 0; (const char)(pgm_read_byte(&pFlashStr[i])) && i < TEXTBUFFER_SIZE; i++)
     {
-        // mt: gTextBuffer[i] = pFlashStr[i];
         gTextBuffer[i] = pgm_read_byte(&pFlashStr[i]);
     }
 
@@ -173,7 +168,7 @@ void LCD_Clear(void)
         gTextBuffer[i] = ' ';
     }
 
-    gTextBuffer[TEXTBUFFER_SIZE - 1] = '\0'; // M. Loeffler 12/2009
+    gTextBuffer[TEXTBUFFER_SIZE - 1] = '\0'; 
 }
 
 

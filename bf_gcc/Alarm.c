@@ -20,13 +20,11 @@
 //  20070129          SIGNAL->ISR                                   - mt
 //*****************************************************************************
 
-//mtA
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include "button.h"
-//mtE
 #include "main.h"
 #include "Alarm.h"
 #include "LCD_functions.h"
@@ -36,13 +34,18 @@
 #include "sound.h"
 #include "usart.h"
 
-#define CONCAT(a,b) a##b
-#ifdef USE_PINx_TOGGLE
-#  define TOGGLE(a,b) CONCAT(PIN,a) = (1 << (b))
-#else
-#  define TOGGLE(a,b) CONCAT(PORT,a) ^= (1 << (b))
-#endif
+/**
+ *#define CONCAT(a,b) a##b
+ *#ifdef USE_PINx_TOGGLE
+ *#  define TOGGLE(a,b) CONCAT(PIN,a) = (1 << (b))
+ *#else
+ *#  define TOGGLE(a,b) CONCAT(PORT,a) ^= (1 << (b))
+ *#endif
+ */
 
+
+#define HOUR       0
+#define MINUTE     1
 
 volatile uint8_t  gALARMMINUTE;
 volatile uint8_t  gALARMHOUR;
@@ -76,6 +79,54 @@ void Alarm_init(void)
 	gALARM_MODE    = ALARM_MODE_OFF;
 }
 
+void CheckAlarm(void)
+{
+	if(gALARM_MODE != ALARM_MODE_OFF && !gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
+	{
+		char day1 = -1;
+		char day2 = -1;
+		
+		switch(gALARM_MODE)
+		{			
+			case ALARM_MODE_1_5:
+				day1 = 0;
+				day2 = 4;
+				break;
+			case ALARM_MODE_6_7:
+				day1 = 5;
+				day2 = 6;
+				break;
+			default:
+				return;
+		} 
+		
+		char day = Dayofweek(gDAY, gMONTH, gYEAR);
+		
+		if(day >= day1 && day <= day2)
+		{
+			gALARM = TRUE;		
+			PlayAlarm();
+		}
+	}
+}
+
+char OnAlarm(char input)
+{
+	if (input != KEY_NULL)
+	{
+		StopPlayAlarm();
+        return ST_AVRBF;
+	}
+	
+	return ST_ON_ALARM;
+}
+
+void Play_Alarm(void)
+{
+	//TOGGLE(B, 5); // TODO: Beeper Pin?
+	
+	Play_Tune();
+}
 
 /*****************************************************************************
 *
@@ -124,9 +175,6 @@ char ShowAlarm(char input)
     return ST_ALARM_TIME_FUNC;
 }
 
-#define HOUR       0
-#define MINUTE     1
-
 
 /*****************************************************************************
 *
@@ -142,14 +190,9 @@ char ShowAlarm(char input)
 char SetAlarm(char input)
 {
     static char enter_function = 1;
-    // mtA
-    // static char time[3];    // table holding the temporary clock setting
-    // static char mode = HOUR;
-    // char HH, HL, MH, ML, SH, SL;
     static uint8_t time[3];
     static uint8_t mode = HOUR;
     uint8_t HH, HL, MH, ML;
-    // mtE
 
     if (enter_function)
     {
@@ -230,56 +273,6 @@ char SetAlarm(char input)
     enter_function = 0;
     return ST_ALARM_TIME_ADJUST_FUNC;
 }
-
-void CheckAlarm(void)
-{
-	if(gALARM_MODE != ALARM_MODE_OFF && !gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
-	{
-		char day1 = -1;
-		char day2 = -1;
-		
-		switch(gALARM_MODE)
-		{			
-			case ALARM_MODE_1_5:
-				day1 = 0;
-				day2 = 4;
-				break;
-			case ALARM_MODE_6_7:
-				day1 = 5;
-				day2 = 6;
-				break;
-			default:
-				return;
-		} 
-		
-		char day = Dayofweek(gDAY, gMONTH, gYEAR);
-		
-		if(day >= day1 && day <= day2)
-		{
-			gALARM = TRUE;		
-			PlayAlarm();
-		}
-	}
-}
-
-char OnAlarm(char input)
-{
-	if (input != KEY_NULL)
-	{
-		StopPlayAlarm();
-        return ST_AVRBF;
-	}
-	
-	return ST_ON_ALARM;
-}
-
-void Play_Alarm(void)
-{
-	//TOGGLE(B, 5); // TODO: Beeper Pin?
-	
-	Play_Tune();
-}
-
 
 char ShowAlarmMode(char input)
 {

@@ -49,9 +49,7 @@
 /************************************************************************/
 // Global variables
 /************************************************************************/
-// mt: volatiles added (based on jw patch)
 extern volatile char gLCD_Update_Required;
-// mt: extern char LCD_Data[LCD_REGISTER_COUNT];
 extern volatile char gTextBuffer[TEXTBUFFER_SIZE];
 extern volatile char gScrollMode;
 extern volatile char gFlashTimer;

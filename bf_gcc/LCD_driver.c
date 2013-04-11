@@ -28,9 +28,7 @@
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
-// mt - only for AUTO:
 #include "main.h"
-// mt - for gButtonTimeout
 #include "button.h"
 #include "LCD_driver.h"
 
@@ -46,7 +44,6 @@ extern unsigned char gButtonTimeout;
 volatile char gAutoPressJoystick = FALSE;
 
 // Used to indicate when the LCD interrupt handler should update the LCD
-// mt jw char gLCD_Update_Required = FALSE;
 volatile char gLCD_Update_Required = FALSE;
 
 // LCD display buffer (for double buffering).

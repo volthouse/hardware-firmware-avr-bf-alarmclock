@@ -31,7 +31,6 @@
 
 #ifndef __DATAFLASH_INCLUDED
 #define __DATAFLASH_INCLUDED
-// mt #endif
 
 // #define MTEXTRAS
 
@@ -39,7 +38,6 @@
 //changed to *DF for avr-libc compatiblity
 #define sbiDF(port,bit)	(port |=  (1<<bit))
 #define cbiDF(port,bit)	(port &= ~(1<<bit))
-//mtE
 
 #define SetBit(x,y)		(x |= (y))
 #define ClrBit(x,y)		(x &=~(y))

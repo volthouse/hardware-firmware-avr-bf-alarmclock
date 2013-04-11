@@ -20,12 +20,8 @@
 //
 //***************************************************************************
 
-//mtA
-//#include <inavr.h>
-//#include "iom169.h"
 #include <avr/io.h>
 #include <avr/wdt.h>
-//mtE
 #include "main.h"
 #include "test.h"
 #include "button.h"
@@ -38,7 +34,6 @@
 
 #define pLCDREG_test (*(char *)(0xEC))
 
-// mtA
 static void TestWaitEnter(void)
 {
     char input = 0;
@@ -47,7 +42,6 @@ static void TestWaitEnter(void)
         input = getkey();           // Read buttons
     }
 }
-// mtE
 
 void Test(void)
 {
@@ -60,36 +54,34 @@ void Test(void)
     TIMSK2 = 0; // Stop clock, the interrupt will disturb the sound-test cause
                 // the play-routine doesn't use interrupt...
 
-//mtA    
-    LCD_puts_f(PSTR("Test"),0); // mt LCD_puts("Test",0);
+    LCD_puts_f(PSTR("Test"),0);
     TestWaitEnter();
-//mtE
 
 
 //// //// //// //// JOYSTICK TEST //// //// //// ////
 
-    LCD_puts_f(PSTR("Left"),0);// mt LCD_puts("Left",0);
+    LCD_puts_f(PSTR("Left"),0);
     
     while(input != KEY_PREV)
     {
         input = getkey();           // Read buttons
     }
     
-    LCD_puts_f(PSTR("Up"),0);// mt LCD_puts("Up",0);
+    LCD_puts_f(PSTR("Up"),0);
     
     while(input != KEY_PLUS)
     {
         input = getkey();           // Read buttons
     }
     
-    LCD_puts_f(PSTR("Right"),0);// mt LCD_puts("Right",0);
+    LCD_puts_f(PSTR("Right"),0);
     
     while(input != KEY_NEXT)
     {
         input = getkey();           // Read buttons
     }
     
-    LCD_puts_f(PSTR("Down"),0);// mt LCD_puts("Down",0);
+    LCD_puts_f(PSTR("Down"),0);
     
     while(input != KEY_MINUS)
     {
@@ -100,7 +92,7 @@ void Test(void)
 
 //// //// //// //// SOUND TEST //// //// //// ////
     
-    LCD_puts_f(PSTR("Sound"),0);// mt LCD_puts("Sound",0);
+    LCD_puts_f(PSTR("Sound"),0);
     TestWaitEnter();
     
     TCCR1A = (1<<COM1A1);// | (1<<COM1A0); // Set OC1A when upcounting, clear when downcounting
@@ -130,11 +122,8 @@ void Test(void)
     
     LCD_puts_f(PSTR("LCD test"),0);// mt LCD_puts("LCD test",0);
 
-    //mtA
-    // mt while(!(PINB & (1<<PORTB4)));
     while(!(PINB & (1<<PINB4)));
     TestWaitEnter();
-    //mtE
     
     cbiBF(LCDCRA, LCDIE);
     
@@ -151,12 +140,11 @@ void Test(void)
         //Delay(1000);
     }
     
-    // mt while(!(PINB & (1<<PORTB4)));
     while(!(PINB & (1<<PINB4)));
     
     Delay(100);
 
-    // mt while((PINB & (1<<PORTB4)));    //pull PINB cause the LCD interrupt is disabled which 
+    //pull PINB cause the LCD interrupt is disabled which 
     while((PINB & (1<<PINB4)));    //pull PINB cause the LCD interrupt is disabled which
                                    //controls the button-bouncing
     sbiBF(LCDCRA, LCDIE);
@@ -189,9 +177,6 @@ void Test(void)
 
 
     WDTCR = (1<<WDCE) | (1<<WDE);   //Enable Watchdog Timer to give reset
-    // mtA 
-    /// avr-libc meth.: wdt_enable(WDTO_30MS);
-    // mtE
     while(1);                       //wait for WD-reset
 }
 
