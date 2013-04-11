@@ -2,42 +2,21 @@
 //
 //  File........: main.c
 //
-//  Author(s)...: ATMEL Norway
+//  Author(s)...: 
 //
 //  Target(s)...: ATmega169
 //
 //  Compiler....: AVR-GCC 4.3.2; avr-libc 1.6.6 (WinAVR 20090313)
 //
-//  Description.: AVR Butterfly main module
+//  Description.: AVR Butterfly Alarm Clock based on Atmels BF Code
 //
 //  Revisions...: 1.0
 //
 //  YYYYMMDD - VER. - COMMENT                                        - SIGN.
 //
-//  20030116 - 1.0  - Created                                        - KS
-//  20031009          port to avr-gcc/avr-libc                       - M.Thomas (*)
-//  20031204          fixed imcompatibility with sleep-modes         - mt
-//  20040218          fixed 'logical and' in calibration             - shc/mt
-//  20040827          fixed avr-libc iom169.h compatibility
-//                    added keyclick function (from version6)        - mt/v6
-//  20050726          minor cleanup                                  - mt
-//  20060107          modifications in KeyClick(), cleanups          - mt
-//  20070129          update with code from Rev07, using 
-//                    avr-gcc 4.1.1/avr-libc 1.4.5 (WinAVR_20070122) - mt
-//  20070131          avr-libc sleep-functions/macros                - mt
-//  20090702          attribute OS_main, avr-gcc 4.3.2 (WinAVR 3/09) - mt
+//  20130401 - 1.0  - Created
 //
 //***************************************************************************
-
-// (*) Martin Thomas, Kaiserslautern, Germany, e-mail: mthomas(at)rhrk.uni-kl.de 
-// or eversmith(at)heizung-thomas.de
-//
-// I'm not working for ATMEL.
-// The port is based on REV_06 of the ATMEL-Code (for IAR-C) with fixes/updates
-// from REV_07.
-// Initially I marked my changes with "// mt" or enclosed them with "// mtA" and 
-// "// mtE" but forgot this for some changes esp. during debugging. 'diff' 
-// against the original code to see everything that has been changed.
 
 #include <stdint.h>
 #include <avr/io.h>
@@ -65,7 +44,6 @@
 #include "ADC.h"
 #include "dataflash.h"
 #include "test.h"
-#include "vcard.h"
 #include "menu.h"
 
 #define pLCDREG_test (*(char *)(0xEC))
