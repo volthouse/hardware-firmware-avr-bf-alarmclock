@@ -24,8 +24,11 @@ extern volatile uint8_t  gHOUR;
 extern volatile uint8_t  gDAY;
 extern volatile uint8_t  gMONTH;
 extern volatile uint16_t gYEAR;
+extern volatile uint8_t  gClockFormat;
 
 extern volatile uint8_t  gPowerSaveTimer;
+
+extern volatile uint8_t gTBL_CLOCK_12[];
 
 //  Function declarations
 void RTC_init(void);            //initialize the Timer Counter 2 in asynchron operation
@@ -34,10 +37,12 @@ char ShowClock(char input);
 char SetClock(char input);
 char SetClockFormat(char input);
 char ShowDate(char input);
+char ShowDate1(char input);
 char SetDate(char input);
 char SetDateFormat(char input);
 
 char Dayofweek(uint8_t day, uint8_t month, uint16_t year);
+
 
 #define CLOCK_24    1
 #define CLOCK_12    0

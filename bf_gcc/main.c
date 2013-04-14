@@ -48,7 +48,7 @@
 
 #define pLCDREG_test (*(char *)(0xEC))
 
-char PowerSaveTimeout = 30;     // Initial value, enable power save mode after 30 min
+char PowerSaveTimeout = 5;      // Initial value, enable power save mode after 30 min
 BOOL AutoPowerSave    = TRUE;   // Variable to enable/disable the Auto Power Save func
 volatile BOOL gKeyClickStatus  = FALSE;  // Variable to enable/disable keyclick
 
@@ -82,8 +82,8 @@ __attribute__ ((OS_main)) int main(void)
 
     state = ST_AVRBF;
     nextstate = ST_AVRBF;
-    statetext = MT_AVRBF;
-    pStateFunc = NULL;
+    statetext = NULL;
+    pStateFunc = ShowInfo;
 
 
     // Program initalization
@@ -606,70 +606,19 @@ char Revision(char input)
 char ShowInfo(char input)
 {
 
-    static char enter = 1;
-    
-    char *s = NULL;
-    uint8_t HH, HL, MH, ML, SH, SL;
-    
-    if(IsAlarmActiveToday())
-    {    
-        char s1[25] = "Time 00-00-00 Alarm 00-00";
-        s = (char*)&s1;
-        
-        HH = CHAR2BCD2(gALARMHOUR);
-        HL = (HH & 0x0F) + '0';
-        HH = (HH >> 4) + '0';
-
-        MH = CHAR2BCD2(gALARMMINUTE);
-        ML = (MH & 0x0F) + '0';
-        MH = (MH >> 4) + '0';
-            
-        s[20]  = HH;
-        s[21]  = HL;
-        s[23]  = MH;
-        s[24]  = ML;
+    if(gSECOND % 4) {         
+        ShowClock(0);
     }
     else
     {
-        char s2[14] = "Time 00-00-00\n";
-        s = (char*)&s2;
-    }    
-    
-     
-    HH = CHAR2BCD2(gHOUR);
-    HL = (HH & 0x0F) + '0';
-    HH = (HH >> 4) + '0';
-
-    MH = CHAR2BCD2(gMINUTE);
-    ML = (MH & 0x0F) + '0';
-    MH = (MH >> 4) + '0';
-
-    SH = CHAR2BCD2(gSECOND);
-    SL = (SH & 0x0F) + '0';
-    SH = (SH >> 4) + '0';
-    
-    s[5]  = HH;
-    s[6]  = HL;
-    s[8]  = MH;
-    s[9]  = ML;
-    s[11] = SH;
-    s[12] = SL;
-    
-    
-    if(enter)
-    {
-        enter = 0;
-        
-        LCD_puts(s, 1, 0);    
+        ShowDate1(0);
     }
-    else if (input == KEY_PREV)
+    
+    
+    
+    if (input != KEY_NULL)
     {        
-        enter = 1;
         return ST_TIME;
-    }
-    else
-    {
-        LCD_puts(s, 1, 1);
     }
     
     return ST_AVRBF;

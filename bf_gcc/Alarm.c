@@ -52,11 +52,6 @@ volatile uint8_t  gALARMHOUR;
 volatile uint8_t  gALARM;
 volatile char  	  gALARM_MODE;
 
-char _clockformat = CLOCK_24;    // set initial clock format to 24H
-
-char _TBL_CLOCK_12[] =   // table used when displaying 12H clock
-{12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-
 
 /******************************************************************************
 *
@@ -166,8 +161,8 @@ char ShowAlarm(char input)
 {
     uint8_t HH, HL, MH, ML;
 
-    if (_clockformat == CLOCK_12)    // if 12H clock
-        HH = CHAR2BCD2(_TBL_CLOCK_12[gALARMHOUR]);   
+    if (gClockFormat == CLOCK_12)    // if 12H clock
+        HH = CHAR2BCD2(gTBL_CLOCK_12[gALARMHOUR]);   
     else
         HH = CHAR2BCD2(gALARMHOUR);
         
@@ -178,8 +173,8 @@ char ShowAlarm(char input)
     ML = (MH & 0x0F) + '0';
     MH = (MH >> 4) + '0';
 	
-	LCD_putc(0, ' ');
-	LCD_putc(1, ' ');
+	LCD_putc(0, 'A');
+	LCD_putc(1, 'L');
     LCD_putc(2, HH);
     LCD_putc(3, HL);
     LCD_putc(4, MH);
@@ -223,8 +218,8 @@ char SetAlarm(char input)
         time[MINUTE] = gALARMMINUTE;
     }
 
-    if (_clockformat == CLOCK_12)    // if 12H clock
-        HH = CHAR2BCD2(_TBL_CLOCK_12[time[HOUR]]);
+    if (gClockFormat == CLOCK_12)    // if 12H clock
+        HH = CHAR2BCD2(gTBL_CLOCK_12[time[HOUR]]);
     else
         HH = CHAR2BCD2(time[HOUR]);
         
@@ -235,8 +230,8 @@ char SetAlarm(char input)
     ML = (MH & 0x0F) + '0';
     MH = (MH >> 4) + '0';
 
-	LCD_putc(0, ' ');
-	LCD_putc(1, ' ');
+	LCD_putc(0, 'A');
+	LCD_putc(1, 'L');
     LCD_putc(2, HH | ((mode == HOUR) ? 0x80 : 0x00));
     LCD_putc(3, HL | ((mode == HOUR) ? 0x80 : 0x00));
     LCD_putc(4, MH | ((mode == MINUTE) ? 0x80 : 0x00));

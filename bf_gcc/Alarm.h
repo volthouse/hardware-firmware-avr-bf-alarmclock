@@ -22,9 +22,6 @@ extern volatile uint8_t  gALARMHOUR;
 extern volatile uint8_t	 gALARM;
 extern volatile char	 gALARM_MODE;
 
-#define CLOCK_24    1
-#define CLOCK_12    0
-
 #define ALARM_MODE_OFF	0
 #define	ALARM_MODE_1_5	1
 #define	ALARM_MODE_6_7	2

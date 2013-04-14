@@ -32,7 +32,6 @@ const char MT_TEMPERATURE[] PROGMEM               = "Temperature";
 const char MT_OPTIONS[] PROGMEM                   = "Options";
 const char MT_OPTIONS_DISPLAY[] PROGMEM           = "Display";
 const char MT_OPTIONS_DISPLAY_CONTRAST[] PROGMEM  = "Adjust contrast";
-const char MT_VCARD_DOWNLOAD_NAME[] PROGMEM       = "Download Name";
 const char MT_OPTIONS_BOOT[] PROGMEM              = "Bootloader";
 const char MT_OPTIONS_POWER_SAVE[] PROGMEM        = "Power Save Mode";
 const char MT_OPTIONS_AUTO_POWER_SAVE[] PROGMEM   = "Auto Power Save";
@@ -42,6 +41,7 @@ const char MT_ALARM_CLOCK[] PROGMEM               = "Time";
 const char MT_ALARM_TIME_ADJUST[] PROGMEM         = "Adjust Time";
 const char MT_ALARM_TIME_MODE[] PROGMEM           = "Mode";
 const char MT_ALARM_TIME_MODE_ADJUST[] PROGMEM    = "Adjust Mode";
+
 
 const MENU_NEXTSTATE menu_nextstate[] PROGMEM = {
 //  STATE                       INPUT       NEXT STATE

@@ -38,7 +38,10 @@ volatile uint8_t  gDAY;
 volatile uint8_t  gMONTH;
 volatile uint16_t gYEAR;
 
+volatile uint8_t  gClockFormat; 
+
 volatile uint8_t gPowerSaveTimer = 0;
+
 uint8_t dateformat = 0;
 
 // Lookup table holding the length of each mont. The first element is a dummy.
@@ -46,10 +49,11 @@ uint8_t dateformat = 0;
 //    often - so leaving them in RAM is better...
 char MonthLength[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-char TBL_CLOCK_12[] =   // table used when displaying 12H clock  
+volatile uint8_t gTBL_CLOCK_12[] =   // table used when displaying 12H clock  
 {12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
-char clockformat = CLOCK_24;    // set initial clock format to 24H
+const char MT_WEEKDAYS[7][3] PROGMEM = {"MO","TU","WD","TH","FR","SA","SU"}; 
+
 
 // different date formates (text only)
 const char EUROPEAN_DATE_TEXT[] PROGMEM =   "DDMMYY";
@@ -107,6 +111,8 @@ void RTC_init(void)
     gDAY     = 11;
     gMONTH   = 11;
     gYEAR    = 11;
+    
+    gClockFormat = CLOCK_24;
 }
 
 
@@ -125,8 +131,8 @@ char ShowClock(char input)
 {
     uint8_t HH, HL, MH, ML, SH, SL;
 
-    if (clockformat == CLOCK_12)    // if 12H clock
-        HH = CHAR2BCD2(TBL_CLOCK_12[gHOUR]);   
+    if (gClockFormat == CLOCK_12)    // if 12H clock
+        HH = CHAR2BCD2(gTBL_CLOCK_12[gHOUR]);   
     else
         HH = CHAR2BCD2(gHOUR);
         
@@ -191,8 +197,8 @@ char SetClock(char input)
         time[SECOND] = gSECOND;
     }
 
-    if (clockformat == CLOCK_12)    // if 12H clock
-        HH = CHAR2BCD2(TBL_CLOCK_12[time[HOUR]]);
+    if (gClockFormat == CLOCK_12)    // if 12H clock
+        HH = CHAR2BCD2(gTBL_CLOCK_12[time[HOUR]]);
     else
         HH = CHAR2BCD2(time[HOUR]);
         
@@ -297,7 +303,7 @@ char SetClockFormat(char input)
     {
         enter = 0;
         
-        if(clockformat == CLOCK_24)
+        if(gClockFormat == CLOCK_24)
             LCD_puts_f(PSTR("24H"), 1);       
         else
             LCD_puts_f(PSTR("12H"), 1);
@@ -305,27 +311,27 @@ char SetClockFormat(char input)
     }
     if (input == KEY_PLUS)
     {
-        if(clockformat == CLOCK_24)
+        if(gClockFormat == CLOCK_24)
         {
-            clockformat = CLOCK_12;
+            gClockFormat = CLOCK_12;
             LCD_puts_f(PSTR("12H"), 1);
         }
         else
         {
-            clockformat = CLOCK_24;
+            gClockFormat = CLOCK_24;
             LCD_puts_f(PSTR("24H"), 1);
         }
     }
     else if (input == KEY_MINUS)
     {
-        if(clockformat == CLOCK_12)
+        if(gClockFormat == CLOCK_12)
         {
-            clockformat = CLOCK_24;
+            gClockFormat = CLOCK_24;
             LCD_puts_f(PSTR("24H"), 1);
         }
         else
         {
-            clockformat = CLOCK_12;
+            gClockFormat = CLOCK_12;
             LCD_puts_f(PSTR("12H"), 1);
         }
     }
@@ -370,6 +376,44 @@ char ShowDate(char input)
    	uint8_t *pDateFormatNr = (uint8_t*)pgm_read_word(&DATE_FORMAT_NR[dateformat]);
     LCD_putc( pgm_read_byte(pDateFormatNr++), YH);
     LCD_putc( pgm_read_byte(pDateFormatNr++), YL);
+    LCD_putc( pgm_read_byte(pDateFormatNr++), MH);
+    LCD_putc( pgm_read_byte(pDateFormatNr++), ML);
+	LCD_putc( pgm_read_byte(pDateFormatNr++), DH);
+    LCD_putc( pgm_read_byte(pDateFormatNr), DL);
+
+    LCD_putc(6, '\0');
+
+    LCD_Colon(1);
+
+    LCD_UpdateRequired(TRUE, 0);
+
+
+    if (input == KEY_PREV)
+        return ST_TIME_DATE;
+    else if (input == KEY_NEXT)
+        return ST_TIME_DATE_ADJUST;
+    else   
+        return ST_TIME_DATE_FUNC;
+}
+
+char ShowDate1(char input)
+{
+    char MH, ML, DH, DL;
+    
+    char d = Dayofweek(gDAY, gMONTH, gYEAR);
+    
+    LCD_puts_f((char*)(&MT_WEEKDAYS[d]), 0); // avoid typecast?
+    
+    MH = CHAR2BCD2(gMONTH);
+    ML = (MH & 0x0F) + '0';
+    MH = (MH >> 4) + '0';
+
+    DH = CHAR2BCD2(gDAY);
+    DL = (DH & 0x0F) + '0';
+    DH = (DH >> 4) + '0';
+
+   	uint8_t *pDateFormatNr = (uint8_t*)pgm_read_word(&DATE_FORMAT_NR[dateformat]);
+    
     LCD_putc( pgm_read_byte(pDateFormatNr++), MH);
     LCD_putc( pgm_read_byte(pDateFormatNr++), ML);
 	LCD_putc( pgm_read_byte(pDateFormatNr++), DH);
