@@ -602,19 +602,26 @@ char Revision(char input)
     return ST_AVRBF_REV;
 }
 
-
+/*****************************************************************************
+*
+*   Function name : ShowInfo
+*
+*   Returns :       char ST_state (to the state-machine)
+*
+*   Parameters :    char input (from joystick)
+*
+*   Purpose :       Shows time and date
+*
+*****************************************************************************/
 char ShowInfo(char input)
 {
-
     if(gSECOND % 4) {         
         ShowClock(0);
     }
     else
     {
         ShowDate1(0);
-    }
-    
-    
+    }    
     
     if (input != KEY_NULL)
     {        
@@ -622,7 +629,6 @@ char ShowInfo(char input)
     }
     
     return ST_AVRBF;
-
 }
 
 

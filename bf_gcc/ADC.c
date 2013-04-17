@@ -15,7 +15,6 @@
 //  YYYYMMDD - VER. - COMMENT                                       - SIGN.
 //
 //  20030116 - 1.0  - Created                                       - LHM
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
 //
 //***************************************************************************
 

@@ -27,8 +27,6 @@
 //
 //  20011017 - 1.00 - Beta release                                  -  RM
 //  20011017 - 0.10 - Generated file                                -  RM
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//  20040121          added compare and erase function              - M.Thomas
 //
 //*****************************************************************************
 

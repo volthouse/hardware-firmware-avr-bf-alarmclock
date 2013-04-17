@@ -15,9 +15,6 @@
 //  YYYYMMDD - VER. - COMMENT                                       - SIGN.
 //
 //  20021015 - 1.0  - Created                                       - LHM
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//  20051107          minior correction (volatiles)                 - mt
-//  20070129          SIGNAL->ISR                                   - mt
 //*****************************************************************************
 
 #include <stdint.h>
@@ -396,6 +393,17 @@ char ShowDate(char input)
         return ST_TIME_DATE_FUNC;
 }
 
+/*****************************************************************************
+*
+*   Function name : ShowDate1
+*
+*   Returns :       char ST_state (to the state-machine)
+*
+*   Parameters :    char input (from joystick)
+*
+*   Purpose :       Shows the time and date on the LCD
+*
+*****************************************************************************/
 char ShowDate1(char input)
 {
     char MH, ML, DH, DL;

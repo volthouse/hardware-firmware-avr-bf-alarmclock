@@ -15,8 +15,6 @@
 //  YYYYMMDD - VER. - COMMENT                                       - SIGN.
 //
 //  20030116 - 1.0  - Created                                       - KS
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//  20070129          SIGNAL->ISR                                   - mt
 //
 //***************************************************************************
 

@@ -16,10 +16,6 @@
 //
 //  20021015 - 1.0  - Created                                       - LHM
 //  20030116 - 2.0  - Code adapted to AVR Butterflyup               - KS
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//  20070131          gLCD_Start_Scroll_Timer volatile              - mt
-//  20070517          LCDClear: gTextBuffer[0] to 0-char            - mt
-//  20091217          LCDClear: gTextBuffer[TEXTBUFFER_SIZE]='\0'   - M. Loeffler
 //*****************************************************************************
 
 //  Include files

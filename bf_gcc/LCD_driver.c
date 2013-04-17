@@ -16,9 +16,6 @@
 //
 //  20021015 - 1.0  - Written for STK502                            - JLL
 //  20030116 - 2.0  - Code adapted to AVR Butterfly                 - KS
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//  20070122          "updated 2006-10-10" included (from REV07)    - from Atmel
-//  20070129          SIGNAL->ISR, gLCD_Start_Scroll_Timer volatile - mt
 //
 //*****************************************************************************
 

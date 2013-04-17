@@ -3,8 +3,7 @@
 ===================================================
 
   ATMEL AVR Butterfly Alarm Clock Application 
-  Code to avr-gcc/avr-libc
-  
+   
 ===================================================
 
 

@@ -15,11 +15,6 @@
 //  YYYYMMDD - VER. - COMMENT                                       - SIGN.
 //
 //  20030116 - 1.0  - Created                                       - LHM
-//  20031009          port to gcc/avr-libc                          - M.Thomas
-//  20040123          added temp.-var.                              - n.n./mt
-//  20050727          added local helper-function                   - mt
-//  20060107          fixed or in pause-if                          - mt
-//  20070605          added song                                    - mt
 //
 //***************************************************************************
 
@@ -139,23 +134,11 @@ const int Whistle[] PROGMEM =
             0, 0
         };
 
-// "Exorzist" added by Martin Thomas (based on demo from the AT90CAN-Library 3.1)
-const char TEXT_SONG8[] PROGMEM   =   "Exorzist";
-const int Exorcist[] PROGMEM =
-        {
-        21,
-        144,E2, 144,A2, 144,E2, 144,B2, 144,E2, 144,G2, 144,A2, 144,E2,
-        144,C3, 144,A2, 144,D3, 144,E2, 144,B2, 144,C3, 144,E2, 144,B2,
-        144,E2, 144,A2, 144,E2, 144,B2, 144,G2, 144,A2, 144,E2, 144,C3,
-        144,E2, 144,D3, 144,E2, 144,B2, 144,C3, 144,E2, 144,B2, 144,E2,
-        144,A2, 144,E2, 144,B2, 144,E2, 144,G2, 576,A2,
-        0, 1
-        };
 
 // pointer-array with pointers to the song arrays
-const int *Songs[] PROGMEM   = { FurElise, Mozart, Minuet, AuldLangSyne, Sirene1, Sirene2, Whistle, Exorcist, 0 };
+const int *Songs[] PROGMEM   = { FurElise, Mozart, Minuet, AuldLangSyne, Sirene1, Sirene2, Whistle, 0 };
 
-PGM_P TEXT_SONG_TBL[] PROGMEM   = { TEXT_SONG1, TEXT_SONG2, TEXT_SONG3, TEXT_SONG4, TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, TEXT_SONG8, 0 };
+PGM_P TEXT_SONG_TBL[] PROGMEM   = { TEXT_SONG1, TEXT_SONG2, TEXT_SONG3, TEXT_SONG4, TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, 0 };
 
 const char PLAYING[] PROGMEM   = "PLAYING";
 
@@ -465,6 +448,17 @@ void PlayClick(void)
 	}
 }
 
+/*****************************************************************************
+*
+*   Function name : PlayAlarm
+*
+*   Returns :       None
+*
+*   Parameters :    None
+*
+*   Purpose :       Plays the alarm-sound
+*
+*****************************************************************************/
 void PlayAlarm(void)
 {
 	pSong=(int*)pgm_read_word(&Songs[3]);
@@ -474,6 +468,17 @@ void PlayAlarm(void)
 	gPlaying = TRUE;
 }
 
+/*****************************************************************************
+*
+*   Function name : StopPlayAlarm
+*
+*   Returns :       None
+*
+*   Parameters :    None
+*
+*   Purpose :       Stops playing alarm-sound
+*
+*****************************************************************************/
 void StopPlayAlarm(void)
 {
 	gPlaying = FALSE;

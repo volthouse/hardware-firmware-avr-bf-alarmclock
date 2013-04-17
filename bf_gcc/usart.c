@@ -15,8 +15,6 @@
 //  YYYYMMDD - VER. - COMMENT                                       - SIGN.
 //
 //  20030116 - 1.0  - Created                                       - LHM
-//  2004            - corrected comment (only receiver enabled)     - mt
-//  20070517        - option to enable transmit                     - mt
 //***************************************************************************
 
 #include <avr/io.h>

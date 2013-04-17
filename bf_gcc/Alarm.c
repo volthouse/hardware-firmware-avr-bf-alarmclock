@@ -1,23 +1,20 @@
 //*****************************************************************************
 //
-//  File........: RTC.c
+//  File........: Alarm.c
 //
-//  Author(s)...: ATMEL Norway
+//  Author(s)...: PDI
 //
 //  Target(s)...: ATmega169
 //
 //  Compiler....: AVR-GCC 4.1.1; avr-libc 1.4.5
 //
-//  Description.: Real Time Clock (RTC)
+//  Description.: Alarm
 //
 //  Revisions...: 1.0
 //
 //  YYYYMMDD - VER. - COMMENT                                       - SIGN.
 //
-//  20021015 - 1.0  - Created                                       - LHM
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//  20051107          minior correction (volatiles)                 - mt
-//  20070129          SIGNAL->ISR                                   - mt
+//  20133029 - 1.0  - Created                                       - PDI
 //*****************************************************************************
 
 #include <stdint.h>
@@ -55,14 +52,13 @@ volatile char  	  gALARM_MODE;
 
 /******************************************************************************
 *
-*   Function name:  RTC_init
+*   Function name:  Alarm_init
 *
 *   returns:        none
 *
 *   parameters:     none
 *
-*   Purpose:        Start Timer/Counter2 in asynchronous operation using a
-*                   32.768kHz crystal.
+*   Purpose:        Initialization
 *
 *******************************************************************************/
 void Alarm_init(void)
@@ -74,6 +70,17 @@ void Alarm_init(void)
 	gALARM_MODE    = ALARM_MODE_OFF;
 }
 
+/******************************************************************************
+*
+*   Function name:  CheckAlarm
+*
+*   returns:        none
+*
+*   parameters:     none
+*
+*   Purpose:        check alarm time, set Alram if time equals alarm time
+*
+*******************************************************************************/
 void CheckAlarm(void)
 {
 	if(gALARM_MODE != ALARM_MODE_OFF && !gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
@@ -105,6 +112,17 @@ void CheckAlarm(void)
 	}
 }
 
+/******************************************************************************
+*
+*   Function name:  OnAlarm
+*
+*   returns:        none
+*
+*   parameters:     none
+*
+*   Purpose:        called on alarm, stop playing sound on key pressed
+*
+*******************************************************************************/
 char OnAlarm(char input)
 {
 	if (input != KEY_NULL)
@@ -116,6 +134,17 @@ char OnAlarm(char input)
 	return ST_ON_ALARM;
 }
 
+/******************************************************************************
+*
+*   Function name:  Play_Alarm
+*
+*   returns:        none
+*
+*   parameters:     none
+*
+*   Purpose:        play alarm tune
+*
+*******************************************************************************/
 void Play_Alarm(void)
 {
 	//TOGGLE(B, 5); // TODO: Beeper Pin?
@@ -123,6 +152,17 @@ void Play_Alarm(void)
 	Play_Tune();
 }
 
+/******************************************************************************
+*
+*   Function name:  IsAlarmActiveToday
+*
+*   returns:        true, if alarm active, else false
+*
+*   parameters:     none
+*
+*   Purpose:        determine, if alarm today active
+*
+*******************************************************************************/
 char IsAlarmActiveToday()
 {
     char day1 = -1;
@@ -148,13 +188,13 @@ char IsAlarmActiveToday()
 
 /*****************************************************************************
 *
-*   Function name : ShowClock
+*   Function name : ShowAlarm
 *
 *   Returns :       char ST_state (to the state-machine)
 *
 *   Parameters :    char input (from joystick)
 *
-*   Purpose :       Shows the clock on the LCD
+*   Purpose :       Shows the alarm time on the LCD
 *
 *****************************************************************************/
 char ShowAlarm(char input)
@@ -196,13 +236,13 @@ char ShowAlarm(char input)
 
 /*****************************************************************************
 *
-*   Function name : SetClock
+*   Function name : SetAlarm
 *
 *   Returns :       char ST_state (to the state-machine)
 *
 *   Parameters :    char input (from joystick)
 *
-*   Purpose :       Adjusts the clock
+*   Purpose :       Adjusts the alarm time
 *
 *****************************************************************************/
 char SetAlarm(char input)
@@ -292,6 +332,17 @@ char SetAlarm(char input)
     return ST_ALARM_TIME_ADJUST_FUNC;
 }
 
+/******************************************************************************
+*
+*   Function name:  ShowAlarmMode
+*
+*   Returns :       char ST_state (to the state-machine)
+*
+*   Parameters :    char input (from joystick)
+*
+*   Purpose:        Shows the alarm mode
+*
+*******************************************************************************/
 char ShowAlarmMode(char input)
 {
     switch(gALARM_MODE)
@@ -317,6 +368,17 @@ char ShowAlarmMode(char input)
     return ST_ALARM_TIME_MODE_FUNC;
 }
 
+/******************************************************************************
+*
+*   Function name:  SetAlarmMode
+*
+*   Returns :       char ST_state (to the state-machine)
+*
+*   Parameters :    char input (from joystick)
+*
+*   Purpose:        Sets the alarm mode
+*
+*******************************************************************************/
 char SetAlarmMode(char input)
 {
     switch(gALARM_MODE)
