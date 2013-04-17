@@ -47,7 +47,7 @@
 volatile uint8_t  gALARMMINUTE;
 volatile uint8_t  gALARMHOUR;
 volatile uint8_t  gALARM;
-volatile char  	  gALARM_MODE;
+volatile uint8_t  gALARM_MODE;
 
 
 /******************************************************************************
@@ -83,7 +83,7 @@ void Alarm_init(void)
 *******************************************************************************/
 void CheckAlarm(void)
 {
-	if(gALARM_MODE != ALARM_MODE_OFF && !gALARM && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
+	if(gALARM_MODE != ALARM_MODE_OFF && !gALARM && gSECOND == 0 && gMINUTE == gALARMMINUTE && gHOUR == gALARMHOUR)
 	{
 		char day1 = -1;
 		char day2 = -1;
@@ -128,29 +128,16 @@ char OnAlarm(char input)
 	if (input != KEY_NULL)
 	{
 		StopPlayAlarm();
+	}
+    
+    if (!gPlaying)
+    {
         return ST_AVRBF;
 	}
-	
+    
 	return ST_ON_ALARM;
 }
 
-/******************************************************************************
-*
-*   Function name:  Play_Alarm
-*
-*   returns:        none
-*
-*   parameters:     none
-*
-*   Purpose:        play alarm tune
-*
-*******************************************************************************/
-void Play_Alarm(void)
-{
-	//TOGGLE(B, 5); // TODO: Beeper Pin?
-	
-	Play_Tune();
-}
 
 /******************************************************************************
 *
