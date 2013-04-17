@@ -189,7 +189,7 @@ void Sound_Init(void)
 *****************************************************************************/
 static void showSongName(unsigned char songnum)
 {
-    LCD_puts_f((PGM_P)pgm_read_word(&TEXT_SONG_TBL[songnum]), 1);  // mt   // Set up the a song in the LCD
+    LCD_puts_f((PGM_P)pgm_read_word(&TEXT_SONG_TBL[songnum]), 1);  // Set up the a song in the LCD
 }
 
 char SelectSound(char input)

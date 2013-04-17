@@ -49,7 +49,16 @@ char MonthLength[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 volatile uint8_t gTBL_CLOCK_12[] =   // table used when displaying 12H clock  
 {12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 
-const char MT_WEEKDAYS[7][3] PROGMEM = {"MO","TU","WD","TH","FR","SA","SU"}; 
+// weekdays
+const char TEXT_WD0[] PROGMEM = "Mo";
+const char TEXT_WD1[] PROGMEM = "TU";
+const char TEXT_WD2[] PROGMEM = "WD";
+const char TEXT_WD3[] PROGMEM = "TH";
+const char TEXT_WD4[] PROGMEM = "FR";
+const char TEXT_WD5[] PROGMEM = "SA";
+const char TEXT_WD6[] PROGMEM = "SU";
+
+PGM_P MT_WEEKDAYS[] PROGMEM = { TEXT_WD0, TEXT_WD1, TEXT_WD2, TEXT_WD3, TEXT_WD4, TEXT_WD5, TEXT_WD6, 0 };
 
 
 // different date formates (text only)
@@ -408,10 +417,10 @@ char ShowDate1(char input)
 {
     char MH, ML, DH, DL;
     
-    char d = Dayofweek(gDAY, gMONTH, gYEAR);
+    uint8_t d = Dayofweek(gDAY, gMONTH, gYEAR);    
     
-    LCD_puts_f((char*)(&MT_WEEKDAYS[d]), 0); // avoid typecast?
-    
+	LCD_puts_f((PGM_P)pgm_read_word(&MT_WEEKDAYS[d]), 1);
+	
     MH = CHAR2BCD2(gMONTH);
     ML = (MH & 0x0F) + '0';
     MH = (MH >> 4) + '0';
