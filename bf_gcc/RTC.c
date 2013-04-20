@@ -675,10 +675,9 @@ ISR(TIMER2_OVF_vect)
     if (gSECOND == 60)
     {
         gSECOND = 0;
-        gMINUTE++;
-        
+        gMINUTE++;        
         gPowerSaveTimer++;
-		CheckAlarm();   
+		   
         if (gMINUTE > 59)
         {
             gMINUTE = 0;
@@ -719,6 +718,8 @@ ISR(TIMER2_OVF_vect)
                 }
             }			
         }
+        
+        CheckAlarm();
     }
 }
 

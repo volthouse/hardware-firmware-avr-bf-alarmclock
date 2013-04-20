@@ -170,10 +170,30 @@ __attribute__ ((OS_main)) int main(void)
                 gAutoPressJoystick = AUTO;
         }
 
-        
+        if(gALARM)
+		{
+			gALARM = FALSE;
+			state = ST_ON_ALARM;
+			nextstate = ST_AVRBF;
+			statetext = MT_ALARM;
+			pStateFunc = &OnAlarm;
+			
+			if(PowerSave)
+            {     
+				PowerSave = FALSE;
+				
+				for(i = 0; i < 20; i++ ) // set all LCD segment register to the variable ucSegments
+				{
+					*(&pLCDREG_test + i) = 0x00;
+				}
+				
+				sbiBF(LCDCRA, 7);           // enable LCD
+				input = getkey();           // Read buttons                
+            }
+		}        
         
         // go to SLEEP
-        if(!gPlaying)              // Do not enter Power save if using UART or playing tunes
+        if(!gPlaying && !gALARM)              // Do not enter Power save if using UART or playing tunes
         {
             if(PowerSave)
                 cbiBF(LCDCRA, 7);             // disable LCD
@@ -203,27 +223,7 @@ __attribute__ ((OS_main)) int main(void)
            sleep_mode();
         }
 		
-		if(gALARM)
-		{
-			gALARM = FALSE;
-			state = ST_ON_ALARM;
-			nextstate = ST_AVRBF;
-			statetext = MT_ALARM;
-			pStateFunc = &OnAlarm;
-			
-			if(PowerSave)
-            {     
-				PowerSave = FALSE;
-				
-				for(i = 0; i < 20; i++ ) // set all LCD segment register to the variable ucSegments
-				{
-					*(&pLCDREG_test + i) = 0x00;
-				}
-				
-				sbiBF(LCDCRA, 7);           // enable LCD
-				input = getkey();           // Read buttons                
-            }
-		}
+		
 		
     }
     return 0;
