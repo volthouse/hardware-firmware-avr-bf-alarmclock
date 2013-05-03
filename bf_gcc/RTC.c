@@ -34,6 +34,7 @@ volatile uint8_t  gHOUR;
 volatile uint8_t  gDAY;
 volatile uint8_t  gMONTH;
 volatile uint16_t gYEAR;
+volatile uint32_t gCLOCKERROR;
 
 volatile uint8_t  gClockFormat; 
 
@@ -111,13 +112,13 @@ void RTC_init(void)
     sei(); // enable global interrupt
 
     // initial time and date setting
-    gSECOND  = 0;
-    gMINUTE  = 0;
-    gHOUR    = 12;
-    gDAY     = 11;
-    gMONTH   = 11;
-    gYEAR    = 11;
-    
+    gSECOND  	 = 0;
+    gMINUTE  	 = 0;
+    gHOUR    	 = 12;
+    gDAY     	 = 11;
+    gMONTH   	 = 11;
+    gYEAR    	 = 11;
+    gCLOCKERROR  = 0;
     gClockFormat = CLOCK_24;
 }
 
@@ -657,6 +658,30 @@ char SetDateFormat(char input)
     return ST_TIME_DATEFORMAT_ADJUST_FUNC;
 }
 
+
+/*****************************************************************************
+*
+*   Function name : Dayofweek
+*
+*   Returns :       char
+*
+*   Parameters :    uint8_t day, month, year
+*
+*   Purpose :       Calculate day of week
+*
+*****************************************************************************/
+char Dayofweek(uint8_t day, uint8_t month, uint16_t year)
+{
+   /** Zeller's congruence for the Gregorian calendar. **/
+   /** With 0=Monday, ... 5=Saturday, 6=Sunday         **/
+   if (month < 3) {
+      month += 12;
+      year--;
+   }
+   return ((13*month+3)/5 + day + year + year/4 - year/100 + year/400) % 7;
+}
+
+
 /******************************************************************************
 *
 *   Timer/Counter2 Overflow Interrupt Routine
@@ -668,8 +693,18 @@ char SetDateFormat(char input)
 ISR(TIMER2_OVF_vect)
 {
     static char LeapMonth;
+	
+	// Clock foward error, 3 sec per day
+	// 86400 sec / 3 sec = 28800 sec
+	// every 28800 sec substract 1 sec
+	if (gCLOCKERROR >= 28800 && gSECOND == 30)
+	{
+		gSECOND--;
+		gCLOCKERROR = 0;
+	}	
+	gCLOCKERROR++;			// increment error
 
-    gSECOND++;               // increment second
+    gSECOND++;				// increment second
 	
 
     if (gSECOND == 60)
@@ -721,15 +756,4 @@ ISR(TIMER2_OVF_vect)
         
         CheckAlarm();
     }
-}
-
-char Dayofweek(uint8_t day, uint8_t month, uint16_t year)
-{
-   /** Zeller's congruence for the Gregorian calendar. **/
-   /** With 0=Monday, ... 5=Saturday, 6=Sunday         **/
-   if (month < 3) {
-      month += 12;
-      year--;
-   }
-   return ((13*month+3)/5 + day + year + year/4 - year/100 + year/400) % 7;
 }
