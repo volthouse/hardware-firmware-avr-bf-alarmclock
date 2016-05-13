@@ -8,7 +8,7 @@
 #include <util/setbaud.h>
 #include <avr/interrupt.h>
 
-#define BUFFER_SIZE 24
+#define BUFFER_SIZE 50
 
 volatile uint16_t send_data = 0;
 

@@ -15,17 +15,23 @@
 #define RTC_WRITE	0x0
 #define RTC_SR		0x10
 #define RTC_PON		0x20
-#define RTC_RESET	(1 << 4)
+#define RTC_RESET	0x10
+#define RTC_V1F		0x04
+#define RTC_V2F		0x08
+#define RTC_AE_S	0x80
 
-#define RTC_CTRL_STATUS 0x03
-#define RTC_CTRL_RESET	0x04
-#define RTC_CLOCK		0x08
+#define RTC_CTRL_INT		0x01
+#define RTC_CTRL_INT_FLAG	0x02
+#define RTC_CTRL_STATUS		0x03
+#define RTC_CTRL_RESET		0x04
+#define RTC_CLOCK			0x08
+#define RTC_ALARM			0x10
 
 #define CS_ON() Set_bits(PORTB, (1 << PB0))
 #define CS_OFF() Clr_bits(PORTB, (1 << PB0))
 
 typedef struct _DateTime {
-    uint16_t year;
+    uint8_t year;
     uint8_t month;
     uint8_t day;
     uint8_t hour;
@@ -56,7 +62,7 @@ static void rtc_set_datetime(TDateTime* dt)
 	//uint8_t weekdays = bin2bcd(0);
 	uint8_t days = bin2bcd(dt->day);
 	uint8_t months = bin2bcd(dt->month);
-	uint8_t years = bin2bcd(dt->year - 2000);
+	uint8_t years = bin2bcd(dt->year);
 
 	CS_ON();       
 	spi_transfer(RTC_CLOCK | RTC_WRITE);
@@ -92,6 +98,62 @@ static void rtc_get_datetime(TDateTime* dt)
 	dt->year = bcd2bin(dt->year);
 }
 
+static void rtc_set_alarm(TDateTime* dt) 
+{
+	TDateTime alarm_enabled = { 0 };
+	
+	// mark alarm settings
+	alarm_enabled.second = dt->second & RTC_AE_S;
+	alarm_enabled.minute = dt->minute & RTC_AE_S;
+	alarm_enabled.hour = dt->hour & RTC_AE_S;
+	alarm_enabled.weekday = dt->weekday & RTC_AE_S;
+	alarm_enabled.day = dt->day & RTC_AE_S;
+	alarm_enabled.month = dt->month & RTC_AE_S;
+	alarm_enabled.year = dt->year & RTC_AE_S;
+	
+	// clear alarm settings
+	dt->second &= ~RTC_AE_S;
+	dt->minute &= ~RTC_AE_S;
+	dt->hour &= ~RTC_AE_S;
+	dt->day &= ~RTC_AE_S;
+	dt->month &= ~RTC_AE_S;
+	dt->year &= ~RTC_AE_S;
+	
+	uint8_t seconds = bin2bcd(dt->second);
+	uint8_t minutes = bin2bcd(dt->minute);
+	uint8_t hours = bin2bcd(dt->hour);
+	//uint8_t weekdays = bin2bcd(0);
+	uint8_t days = bin2bcd(dt->day);
+	uint8_t months = bin2bcd(dt->month);
+	uint8_t years = bin2bcd(dt->year - 2000);
+
+	CS_ON();       
+	spi_transfer(RTC_ALARM | RTC_WRITE);
+	spi_transfer(seconds | alarm_enabled.second);	
+	spi_transfer(minutes | alarm_enabled.minute);
+	spi_transfer(hours | alarm_enabled.hour);
+	spi_transfer(days | alarm_enabled.day);
+	spi_transfer(0);      
+	spi_transfer(months | alarm_enabled.month);
+	spi_transfer(years | alarm_enabled.year);
+	CS_OFF();
+}
+
+void debug_rtc(void)
+{
+	for (uint8_t i = 0; i < 4; i++)
+	{
+		CS_ON();
+		spi_transfer(i | RTC_READ);
+		uint8_t d = spi_transfer(0);
+		CS_OFF();
+	
+		char buf[20] = { 0 };
+		sprintf(buf, "Reg %d: %x\r\n", i, d);
+		uart_putchars(buf, 20);
+	}
+}
+
 int main(void)
 {			
 	cli();
@@ -122,6 +184,9 @@ int main(void)
 	spi_transfer(RTC_RESET);
 	CS_OFF();
 	
+	//debug_rtc();
+	_delay_ms(100);
+	
 	// RTC Status
 	CS_ON();
 	uint8_t ctrl_Status = spi_transfer(RTC_CTRL_STATUS);
@@ -147,8 +212,9 @@ int main(void)
 		CS_OFF();
     }
 	
+	
 		
-	now.year = 2016;
+	now.year = 16;
 	now.month = 5;
 	now.day = 12;
 	
@@ -156,6 +222,27 @@ int main(void)
 	now.minute = 00;
 	now.second = 00;	
 	rtc_set_datetime(&now);
+	
+	TDateTime alarm = { 0 };
+	
+	alarm.second = 4 | RTC_AE_S;
+	alarm.minute = 1 | RTC_AE_S;
+	rtc_set_alarm(&alarm);
+	
+	
+	
+	CS_ON();
+	spi_transfer(RTC_CTRL_INT_FLAG | RTC_WRITE);
+	spi_transfer(0);
+	CS_OFF();
+	
+	CS_ON();
+	spi_transfer(RTC_CTRL_INT | RTC_WRITE);
+	spi_transfer(1);
+	CS_OFF();
+	
+	debug_rtc();
+	
 	
 	for (;;)
 	{
@@ -170,6 +257,14 @@ int main(void)
 			sprintf(buf, "%d.%d.%d - %d:%d:%d\r\n", now.day, now.month, now.year, now.hour, now.minute, now.second);
 		
 			uart_putchars(buf, 20);
+			
+			if(s == 5)
+			{
+				CS_ON();
+				spi_transfer(RTC_CTRL_INT_FLAG | RTC_WRITE);
+				spi_transfer(0);
+				CS_OFF();			
+			}
 		}
 	}
 
