@@ -19,6 +19,7 @@
 #define RTC_V1F		0x04
 #define RTC_V2F		0x08
 #define RTC_AE_S	0x80
+#define RTC_THE		0x02
 
 #define RTC_CTRL_INT		0x01
 #define RTC_CTRL_INT_FLAG	0x02
@@ -26,6 +27,8 @@
 #define RTC_CTRL_RESET		0x04
 #define RTC_CLOCK			0x08
 #define RTC_ALARM			0x10
+#define RTC_TEMPERATURE		0x20
+#define RTC_EPROM_CTRL		0x30
 
 #define CS_ON() Set_bits(PORTB, (1 << PB0))
 #define CS_OFF() Clr_bits(PORTB, (1 << PB0))
@@ -42,8 +45,16 @@ typedef struct _DateTime {
 
 static TDateTime now;
 
+
 static uint8_t bcd2bin (uint8_t val) { return val - 6 * (val >> 4); }
+
 static uint8_t bin2bcd (uint8_t val) { return val + 6 * (val / 10); }
+	
+static int map(int x, int in_min, int in_max, int out_min, int out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 
 static uint8_t spi_transfer(uint8_t _data)
 {
@@ -139,18 +150,46 @@ static void rtc_set_alarm(TDateTime* dt)
 	CS_OFF();
 }
 
-void debug_rtc(void)
+static void rtc_clear_alarm_int(void)
 {
-	for (uint8_t i = 0; i < 4; i++)
+	CS_ON();
+	spi_transfer(RTC_CTRL_INT_FLAG | RTC_WRITE);
+	spi_transfer(0);
+	CS_OFF();	
+}
+
+static int rtc_get_temperature(void)
+{
+	CS_ON();
+	spi_transfer(RTC_TEMPERATURE | RTC_READ);
+	uint8_t data = spi_transfer(0);	
+	CS_OFF();
+	
+	return map(data, 0, 250, -60, 190);
+}
+
+static void rtc_debug(void)
+{
+	uint8_t reg[26] = {
+		0x00, 0x01, 0x02, 0x03, 0x04,
+		0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E,
+		0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+		0x18, 0x19,
+		0x20,
+		0x30, 0x31, 0x32, 0x33
+	};
+	
+	for (uint8_t i = 0; i < 26; i++)
 	{
 		CS_ON();
-		spi_transfer(i | RTC_READ);
+		spi_transfer(reg[i] | RTC_READ);
 		uint8_t d = spi_transfer(0);
 		CS_OFF();
 	
 		char buf[20] = { 0 };
-		sprintf(buf, "Reg %d: %x\r\n", i, d);
+		sprintf(buf, "Reg 0x%02x: 0x%02x\r\n", reg[i], d);
 		uart_putchars(buf, 20);
+		_delay_ms(100);
 	}
 }
 
@@ -176,7 +215,7 @@ int main(void)
 	
 	CS_OFF();
 	
-	SPCR = (1<<SPE)|(1<<MSTR)| (0<<SPI2X) | (0<<SPR1) | (0<<SPR0);
+	SPCR = (1<<SPE) | (1 << MSTR) | (0 << SPI2X) | (0 << SPR1) | (0 << SPR0);
 	
 	// RTC Software Reset
 	CS_ON();
@@ -193,7 +232,7 @@ int main(void)
 	CS_OFF();
 	
     if(ctrl_Status & RTC_PON) {
-		//POWER-ON Bit löschen
+		//clear POWER-ON bit
 		ctrl_Status &= ~RTC_PON;
         
 		CS_ON();
@@ -203,7 +242,7 @@ int main(void)
     }
 	  
     if(ctrl_Status & RTC_SR) {
-		//SELF-RECOVERY Bit löschen
+		//clear SELF-RECOVERY bit
 		ctrl_Status &= ~RTC_SR;
         
 		CS_ON();
@@ -211,25 +250,6 @@ int main(void)
 		spi_transfer(ctrl_Status);
 		CS_OFF();
     }
-	
-	
-		
-	now.year = 16;
-	now.month = 5;
-	now.day = 12;
-	
-	now.hour = 12;
-	now.minute = 00;
-	now.second = 00;	
-	rtc_set_datetime(&now);
-	
-	TDateTime alarm = { 0 };
-	
-	alarm.second = 4 | RTC_AE_S;
-	alarm.minute = 1 | RTC_AE_S;
-	rtc_set_alarm(&alarm);
-	
-	
 	
 	CS_ON();
 	spi_transfer(RTC_CTRL_INT_FLAG | RTC_WRITE);
@@ -241,29 +261,52 @@ int main(void)
 	spi_transfer(1);
 	CS_OFF();
 	
-	debug_rtc();
+	CS_ON();
+	spi_transfer(RTC_EPROM_CTRL | RTC_WRITE);
+	spi_transfer(RTC_THE);
+	CS_OFF();
 	
+	
+	// set datetime	
+	now.year = 16;
+	now.month = 5;
+	now.day = 12;
+	
+	now.hour = 12;
+	now.minute = 00;
+	now.second = 00;	
+	rtc_set_datetime(&now);
+	
+	
+	// set alarm
+	TDateTime alarm = { 0 };	
+	alarm.second = 5 | RTC_AE_S;
+	//alarm.minute = 0 | RTC_AE_S;
+	rtc_set_alarm(&alarm);
+	
+	
+	rtc_debug();
+	
+	
+	uint8_t s = 0;
 	
 	for (;;)
 	{
 		rtc_get_datetime(&now);
-						
-		static uint8_t s = 0;
 		
+		int temperature = rtc_get_temperature();						
+				
 		if(now.second != s) {
 			s = now.second;
 			
-			char buf[20] = { 0 };		
-			sprintf(buf, "%d.%d.%d - %d:%d:%d\r\n", now.day, now.month, now.year, now.hour, now.minute, now.second);
+			char buf[50] = { 0 };		
+			sprintf(buf, "%d.%d.%d - %d:%d:%d  Temp:%d\r\n", now.day, now.month, now.year, now.hour, now.minute, now.second, temperature);
 		
-			uart_putchars(buf, 20);
+			uart_putchars(buf, 50);
 			
-			if(s == 5)
+			if(s == (alarm.second + 1))
 			{
-				CS_ON();
-				spi_transfer(RTC_CTRL_INT_FLAG | RTC_WRITE);
-				spi_transfer(0);
-				CS_OFF();			
+				rtc_clear_alarm_int();		
 			}
 		}
 	}
