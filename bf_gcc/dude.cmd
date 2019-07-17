@@ -13,6 +13,11 @@ pause
 avrdude -u -F -D -p atmega16 -c butterfly -P com2 -b 19200 -e -U flash:w:default/bf_gcc.hex
 rem avrdude -u -F -D -p atmega169 -c butterfly -P com2 -b 19200 -e -U flash:w:bf_gcc.hex
 
+rem read flash
+rem sudo avrdude  -p m169 -c butterfly -P /dev/ttyUSB0 -b 19200 -U flash:r:bf_gcc.hex:i
+rem write flash
+rem sudo avrdude -u -F -D -p m169 -c butterfly -P /dev/ttyUSB0 -b 19200 -e -U flash:w:main.hex
+
 echo Move joystick "up" now and test if the applications starts. 
 echo Depending on the AVRDUDE version you have to reset the device if 
 echo "AVR-BUTTERFLY GCC" does not appear on the LCD now. AVRDUDE 
