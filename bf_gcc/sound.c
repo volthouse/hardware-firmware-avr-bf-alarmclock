@@ -80,9 +80,9 @@ const int Minuet[] PROGMEM =
         };
 
 
-char TEXT_SONG4[] PROGMEM    = "Auld Lang Syne";
+const char TEXT_SONG4[] PROGMEM    = "Auld Lang Syne";
 
-int AuldLangSyne[] PROGMEM = 
+const int AuldLangSyne[] PROGMEM = 
         {  
             3, 
             4,g2, 2,c3, 8,c3, 4,c3, 4,e3, 2,d3, 8,c3, 4,d3, 8,e3, 8,d3, 2,c3, 
@@ -136,9 +136,9 @@ const int Whistle[] PROGMEM =
 
 
 // pointer-array with pointers to the song arrays
-const int *Songs[] PROGMEM   = { FurElise, Mozart, Minuet, AuldLangSyne, Sirene1, Sirene2, Whistle, 0 };
+PGM_P const Songs[] PROGMEM   = { FurElise, Mozart, Minuet, AuldLangSyne, Sirene1, Sirene2, Whistle, 0 };	
 
-PGM_P TEXT_SONG_TBL[] PROGMEM   = { TEXT_SONG1, TEXT_SONG2, TEXT_SONG3, TEXT_SONG4, TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, 0 };
+PGM_P const TEXT_SONG_TBL[] PROGMEM   = { TEXT_SONG1, TEXT_SONG2, TEXT_SONG3, TEXT_SONG4, TEXT_SONG5, TEXT_SONG6, TEXT_SONG7, 0 };
 
 const char PLAYING[] PROGMEM   = "PLAYING";
 

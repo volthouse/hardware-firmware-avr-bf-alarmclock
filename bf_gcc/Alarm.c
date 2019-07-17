@@ -49,6 +49,7 @@ volatile uint8_t  gALARMHOUR;
 volatile uint8_t  gALARM;
 volatile uint8_t  gALARM_MODE;
 
+char PowerSaveTimeout1 = 3;
 
 /******************************************************************************
 *
@@ -106,7 +107,8 @@ void CheckAlarm(void)
 		
 		if(day >= day1 && day <= day2)
 		{
-			gALARM = TRUE;		
+			gALARM = TRUE;
+            gPowerSaveTimer = 0;		
 			PlayAlarm();
 		}
 	}
@@ -130,6 +132,11 @@ char OnAlarm(char input)
 		StopPlayAlarm();
 	}
     
+    if(gPowerSaveTimer >= PowerSaveTimeout1)
+    {
+        StopPlayAlarm();
+    }
+
     if (!gPlaying)
     {
         return ST_AVRBF;

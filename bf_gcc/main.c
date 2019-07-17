@@ -48,7 +48,7 @@
 
 #define pLCDREG_test (*(char *)(0xEC))
 
-char PowerSaveTimeout = 5;      // Initial value, enable power save mode after 30 min
+char PowerSaveTimeout = 4;      // Initial value, enable power save mode after 30 min
 BOOL AutoPowerSave    = TRUE;   // Variable to enable/disable the Auto Power Save func
 volatile BOOL gKeyClickStatus  = FALSE;  // Variable to enable/disable keyclick
 
@@ -133,7 +133,7 @@ __attribute__ ((OS_main)) int main(void)
         
         //enable ATmega169 power save modus if autopowersave
         if(AutoPowerSave)
-        {
+        {            
             if(gPowerSaveTimer >= PowerSaveTimeout)
             {
                 state = ST_AVRBF;
