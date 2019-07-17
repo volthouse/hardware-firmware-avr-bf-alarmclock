@@ -1,0 +1,54 @@
+//*****************************************************************************
+//
+//  File........: RTC.h
+//
+//  Author(s)...: ATMEL Norway
+//
+//  Target(s)...: ATmega169
+//
+//  Description.: Functions for RTC.c
+//
+//  Revisions...: 1.0
+//
+//  YYYYMMDD - VER. - COMMENT                                       - SIGN.
+//
+//  20021015 - 1.0  - File created                                  - LHM
+//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
+//
+//*****************************************************************************
+
+#ifdef __cplusplus
+extern "C"{
+#endif
+
+extern volatile uint8_t  gSECOND;
+extern volatile uint8_t  gMINUTE;
+extern volatile uint8_t  gHOUR;
+extern volatile uint8_t  gDAY;
+extern volatile uint8_t  gMONTH;
+extern volatile uint16_t gYEAR;
+extern volatile uint8_t  gClockFormat;
+
+extern volatile uint8_t  gPowerSaveTimer;
+
+extern volatile uint8_t gTBL_CLOCK_12[];
+
+//  Function declarations
+void RTC_init(void);            //initialize the Timer Counter 2 in asynchron operation
+void Time_update(void);        //updates the time and date
+char ShowClock(char input);
+char SetClock(char input);
+char SetClockFormat(char input);
+char ShowDate(char input);
+char ShowDate1(char input);
+char SetDate(char input);
+char SetDateFormat(char input);
+
+char Dayofweek(uint8_t day, uint8_t month, uint16_t year);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+#define CLOCK_24    1
+#define CLOCK_12    0
